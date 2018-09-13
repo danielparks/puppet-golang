@@ -2,9 +2,10 @@
   "name": "dp-golang",
   "version": "0.1.0",
   "author": "Daniel Parks",
-  "summary": "",
+  "summary": "Install Go simply",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/danielparks/puppet-golang",
+  "issues_url": "https://github.com/danielparks/puppet-golang/issues",
   "dependencies": [
 
   ],
