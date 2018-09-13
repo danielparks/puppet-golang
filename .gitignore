@@ -1,4 +1,3 @@
-.git/
 .*.sw[op]
 .metadata
 .yardoc
@@ -11,7 +10,6 @@
 /bin/
 /doc/
 /Gemfile.local
-/Gemfile.lock
 /junit/
 /log/
 /pkg/
