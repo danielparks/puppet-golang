@@ -1,7 +1,6 @@
 # @summary Install go in /usr/local/go and /usr/local/bin
 #
-# This installs go under `/usr/local/go/` and symlinks the binaries into
-# `/usr/local/bin/`.
+# `/usr/local/share/` *must* exist.
 #
 # Most people will not need to change any parameter other than `$version`.
 #
@@ -35,17 +34,39 @@ class golang (
   },
   String[1]        $source        = "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
 ) {
+  $archive_path = '/tmp/puppet-golang.tar.gz'
+
   include archive
 
-  $archive_path = '/tmp/puppet-golang.tar.gz'
+  # Used to ensure that the installation is updated when $source changes.
+  file { '/usr/local/share/go-SOURCE':
+    ensure  => file,
+    owner   => 0,
+    group   => 0, # group might be called root or wheel
+    mode    => '0644',
+    content => @("EOF"),
+      # This file is managed by Puppet. Changes will be overwritten.
+      ${source}
+      | EOF
+    notify  => Exec['dp/golang refresh go installation'],
+  }
+
+  # If the /usr/local/go directory exists, archive won't update it.
+  exec { 'dp/golang refresh go installation':
+    command     => "rm -rf /usr/local/go",
+    path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+    user        => 'root',
+    refreshonly => true,
+    notify      => Archive[$archive_path],
+  }
+
   archive { $archive_path:
-    ensure          => present,
-    extract         => true,
-    extract_path    => '/usr/local',
-    extract_command => 'rm -rf go && tar xzf %s',
-    source          => $source,
-    creates         => '/usr/local/go',
-    cleanup         => true,
+    ensure       => present,
+    extract      => true,
+    extract_path => '/usr/local',
+    source       => $source,
+    creates      => '/usr/local/go',
+    cleanup      => true,
   }
 
   $link_binaries.each |$binary| {

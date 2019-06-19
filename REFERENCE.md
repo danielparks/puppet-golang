@@ -11,8 +11,7 @@
 
 ### golang
 
-This installs go under `/usr/local/go/` and symlinks the binaries into
-`/usr/local/bin/`.
+`/usr/local/share/` *must* exist.
 
 Most people will not need to change any parameter other than `$version`.
 
