@@ -53,7 +53,7 @@ class golang (
     ensure => file,
     owner  => 0,
     group  => 0, # root's group, whether it's called "root" or "wheel"
-    source => "https://dl.google.com/go/go${version}.linux-amd64.tar.gz",
+    source => $source,
     notify => Exec['golang: extract and install'],
   }
 
