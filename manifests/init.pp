@@ -22,7 +22,7 @@
 # @param arch
 #   The architecture to use to determine what archive to download.
 class golang (
-  String[1]        $version       = '1.11',
+  String[1]        $version       = '1.12.6',
   Array[String[1]] $link_binaries = ['go', 'gofmt', 'godoc'],
   String[1]        $archive_path  = '/usr/local/src/puppet-golang.tar.gz',
   String[1]        $source_prefix = 'https://dl.google.com/go',
