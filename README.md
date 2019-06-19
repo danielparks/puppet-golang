@@ -9,7 +9,7 @@ This installs go under `/usr/local/go/`, and symlinks the binaries into
 include golang
 ~~~
 
-You may wish to set the version with hiera (`golang::version: 1.10.4`), or in
+You may wish to set the version with hiera (`golang::version: 1.10.4`), or with
 a class declaration:
 
 ~~~ puppet
