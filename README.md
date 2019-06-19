@@ -18,11 +18,6 @@ class { 'golang':
 }
 ~~~
 
-### Notes
-
-This will attempt to create `/usr/local/src`, and it will store the golang
-archive in that directory.
-
 ## Limitations
 
 This does not support Windows.

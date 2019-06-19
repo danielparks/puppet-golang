@@ -11,9 +11,8 @@
 
 ### golang
 
-This installs go under `/usr/local/go/`, and symlinks the binaries into
-`/usr/local/bin/`. It also downloads the archive into
-`/usr/local/src/puppet-golang.tar.gz`.
+This installs go under `/usr/local/go/` and symlinks the binaries into
+`/usr/local/bin/`.
 
 Most people will not need to change any parameter other than `$version`.
 
@@ -37,14 +36,6 @@ Data type: `Array[String[1]]`
 The binaries to symlink into `/usr/local/bin`.
 
 Default value: ['go', 'gofmt', 'godoc']
-
-##### `archive_path`
-
-Data type: `String[1]`
-
-Where to store the downloaded archive.
-
-Default value: '/usr/local/src/puppet-golang.tar.gz'
 
 ##### `source`
 
