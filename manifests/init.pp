@@ -53,7 +53,7 @@ class golang (
 
   # If the /usr/local/go directory exists, archive won't update it.
   exec { 'dp/golang refresh go installation':
-    command     => "rm -rf /usr/local/go",
+    command     => 'rm -rf /usr/local/go',
     path        => ['/usr/local/bin', '/usr/bin', '/bin'],
     user        => 'root',
     refreshonly => true,
