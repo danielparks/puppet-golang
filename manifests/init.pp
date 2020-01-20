@@ -27,10 +27,11 @@ class golang (
     default  => $facts['kernel']
   },
   String[1]        $arch          = $facts['os']['hardware'] ? {
-    undef    => 'amd64', # Darwin doesn't have os.hardware.
-    'x86_64' => 'amd64',
-    'i686'   => '386',
-    default  => $facts['os']['hardware'],
+    undef     => 'amd64', # Assume amd64 if os.hardware is missing.
+    'x86_64'  => 'amd64',
+    'i686'    => '386',
+    'aarch64' => 'armv6l',
+    default   => $facts['os']['hardware'],
   },
   String[1]        $source        = "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
 ) {
