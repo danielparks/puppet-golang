@@ -42,7 +42,7 @@ Data type: `Array[String[1]]`
 
 The binaries to symlink into `/usr/local/bin`.
 
-Default value: `['go', 'gofmt', 'godoc']`
+Default value: `['go', 'gofmt']`
 
 ##### <a name="source"></a>`source`
 
