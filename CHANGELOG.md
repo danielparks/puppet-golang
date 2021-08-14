@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.0.4
+
+**Features**
+
+* Latest Go version (1.16.7) installed by default.
+
+**Bugfixes**
+
+* The `godoc` binary no longer ships in the Go package, so this no longer links
+  it into `/usr/local/bin` by default. **Note:** this does not remove the link
+  if it already exists.
+* Metadata updated to support the most recent version of
+  [puppet/archive](https://forge.puppet.com/modules/puppet/archive).
+
 ## Release 1.0.3
 
 **Features**
