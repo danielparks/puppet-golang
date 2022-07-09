@@ -6,7 +6,7 @@
 #
 # @param version
 #   The version of Go to install. You can find the latest version number at
-#   https://golang.org/dl/
+#   https://go.dev/dl/
 # @param link_binaries
 #   The binaries to symlink into `/usr/local/bin`.
 # @param source
@@ -20,7 +20,7 @@
 class golang (
   String[1]        $version       = '1.16.7',
   Array[String[1]] $link_binaries = ['go', 'gofmt'],
-  String[1]        $source_prefix = 'https://dl.google.com/go',
+  String[1]        $source_prefix = 'https://go.dev/dl',
   String[1]        $os            = $facts['kernel'] ? {
     'Linux'  => 'linux',
     'Darwin' => 'darwin',

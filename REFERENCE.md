@@ -32,7 +32,7 @@ The following parameters are available in the `golang` class:
 Data type: `String[1]`
 
 The version of Go to install. You can find the latest version number at
-https://golang.org/dl/
+https://go.dev/dl/
 
 Default value: `'1.16.7'`
 
@@ -58,7 +58,7 @@ Data type: `String[1]`
 
 URL to directory that contains the archive to download.
 
-Default value: `'https://dl.google.com/go'`
+Default value: `'https://go.dev/dl'`
 
 ##### <a name="os"></a>`os`
 
