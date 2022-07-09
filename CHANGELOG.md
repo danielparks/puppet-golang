@@ -1,8 +1,14 @@
-# Changelog
+# Change log
 
 All notable changes to this project will be documented in this file.
 
-## Release 1.0.5
+## Release 1.0.6
+
+**Bugfixes**
+
+* Updated change log.
+
+## Release 1.0.5 (withdrawn)
 
 **Features**
 
