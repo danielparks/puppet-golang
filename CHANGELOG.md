@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.0.7
+
+**Features**
+
+* Latest Go version (1.19.1) installed by default.
+
 ## Release 1.0.6
 
 **Bugfixes**

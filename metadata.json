@@ -1,6 +1,6 @@
 {
   "name": "dp-golang",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "Daniel Parks",
   "summary": "Install Go simply",
   "license": "Apache-2.0",
