@@ -9,14 +9,14 @@
 #   https://go.dev/dl/
 # @param link_binaries
 #   The binaries to symlink into `/usr/local/bin`.
-# @param source
-#   URL to actual archive.
 # @param source_prefix
 #   URL to directory that contains the archive to download.
 # @param os
 #   The OS to use to determine what archive to download.
 # @param arch
 #   The architecture to use to determine what archive to download.
+# @param source
+#   URL to actual archive.
 class golang (
   String[1]        $version       = '1.19.1',
   Array[String[1]] $link_binaries = ['go', 'gofmt'],
@@ -24,7 +24,7 @@ class golang (
   String[1]        $os            = $facts['kernel'] ? {
     'Linux'  => 'linux',
     'Darwin' => 'darwin',
-    default  => $facts['kernel']
+    default  => $facts['kernel'] # lint:ignore:parameter_documentation broken
   },
   String[1]        $arch          = $facts['os']['hardware'] ? {
     undef     => 'amd64', # Assume amd64 if os.hardware is missing.
@@ -32,7 +32,7 @@ class golang (
     'armv7l'  => 'armv6l',
     'i686'    => '386',
     'x86_64'  => 'amd64',
-    default   => $facts['os']['hardware'],
+    default   => $facts['os']['hardware'], # lint:ignore:parameter_documentation broken
   },
   String[1]        $source        = "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
 ) {
@@ -46,10 +46,12 @@ class golang (
     owner   => 0,
     group   => 0, # group might be called root or wheel
     mode    => '0644',
+    # lint:ignore:strict_indent broken lint check
     content => @("EOF"),
       # This file is managed by Puppet. Changes will be overwritten.
       ${source}
       | EOF
+    # lint:endignore
     notify  => Exec['dp/golang refresh go installation'],
   }
 
