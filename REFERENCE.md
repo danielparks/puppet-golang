@@ -34,7 +34,7 @@ Data type: `String[1]`
 The version of Go to install. You can find the latest version number at
 https://go.dev/dl/
 
-Default value: `'1.18.3'`
+Default value: `'1.19.1'`
 
 ##### <a name="link_binaries"></a>`link_binaries`
 
