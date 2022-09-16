@@ -22,10 +22,10 @@ The following parameters are available in the `golang` class:
 
 * [`version`](#version)
 * [`link_binaries`](#link_binaries)
-* [`source`](#source)
 * [`source_prefix`](#source_prefix)
 * [`os`](#os)
 * [`arch`](#arch)
+* [`source`](#source)
 
 ##### <a name="version"></a>`version`
 
@@ -43,14 +43,6 @@ Data type: `Array[String[1]]`
 The binaries to symlink into `/usr/local/bin`.
 
 Default value: `['go', 'gofmt']`
-
-##### <a name="source"></a>`source`
-
-Data type: `String[1]`
-
-URL to actual archive.
-
-Default value: `"${source_prefix}/go${version}.${os}-${arch}.tar.gz"`
 
 ##### <a name="source_prefix"></a>`source_prefix`
 
@@ -75,4 +67,12 @@ Data type: `String[1]`
 The architecture to use to determine what archive to download.
 
 Default value: `$facts['os']['hardware']`
+
+##### <a name="source"></a>`source`
+
+Data type: `String[1]`
+
+URL to actual archive.
+
+Default value: `"${source_prefix}/go${version}.${os}-${arch}.tar.gz"`
 
