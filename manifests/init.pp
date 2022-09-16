@@ -18,7 +18,7 @@
 # @param arch
 #   The architecture to use to determine what archive to download.
 class golang (
-  String[1]        $version       = '1.18.3',
+  String[1]        $version       = '1.19.1',
   Array[String[1]] $link_binaries = ['go', 'gofmt'],
   String[1]        $source_prefix = 'https://go.dev/dl',
   String[1]        $os            = $facts['kernel'] ? {
