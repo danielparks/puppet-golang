@@ -45,3 +45,5 @@
 /.vscode/
 /.sync.yml
 /.devcontainer/
+/.github
+/provision.yaml
