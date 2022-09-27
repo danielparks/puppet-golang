@@ -6,7 +6,7 @@
 
 ### Classes
 
-* [`golang`](#golang): Install go in /usr/local/go and /usr/local/bin
+* [`golang`](#golang): Install go in `/usr/local/go` and `/usr/local/bin`
 
 ## Classes
 
@@ -20,14 +20,14 @@ Most people will not need to change any parameter other than `$version`.
 
 The following parameters are available in the `golang` class:
 
-* [`version`](#version)
-* [`link_binaries`](#link_binaries)
-* [`source_prefix`](#source_prefix)
-* [`os`](#os)
-* [`arch`](#arch)
-* [`source`](#source)
+* [`version`](#-golang--version)
+* [`link_binaries`](#-golang--link_binaries)
+* [`source_prefix`](#-golang--source_prefix)
+* [`os`](#-golang--os)
+* [`arch`](#-golang--arch)
+* [`source`](#-golang--source)
 
-##### <a name="version"></a>`version`
+##### <a name="-golang--version"></a>`version`
 
 Data type: `String[1]`
 
@@ -36,7 +36,7 @@ https://go.dev/dl/
 
 Default value: `'1.19.1'`
 
-##### <a name="link_binaries"></a>`link_binaries`
+##### <a name="-golang--link_binaries"></a>`link_binaries`
 
 Data type: `Array[String[1]]`
 
@@ -44,7 +44,7 @@ The binaries to symlink into `/usr/local/bin`.
 
 Default value: `['go', 'gofmt']`
 
-##### <a name="source_prefix"></a>`source_prefix`
+##### <a name="-golang--source_prefix"></a>`source_prefix`
 
 Data type: `String[1]`
 
@@ -52,23 +52,40 @@ URL to directory that contains the archive to download.
 
 Default value: `'https://go.dev/dl'`
 
-##### <a name="os"></a>`os`
+##### <a name="-golang--os"></a>`os`
 
 Data type: `String[1]`
 
 The OS to use to determine what archive to download.
 
-Default value: `$facts['kernel']`
+Default value:
 
-##### <a name="arch"></a>`arch`
+```puppet
+$facts['kernel'] ? {
+    'Linux'  => 'linux',
+    'Darwin' => 'darwin',
+    default  => $facts['kernel']
+```
+
+##### <a name="-golang--arch"></a>`arch`
 
 Data type: `String[1]`
 
 The architecture to use to determine what archive to download.
 
-Default value: `$facts['os']['hardware']`
+Default value:
 
-##### <a name="source"></a>`source`
+```puppet
+$facts['os']['hardware'] ? {
+    undef     => 'amd64', # Assume amd64 if os.hardware is missing.
+    'aarch64' => 'arm64',
+    'armv7l'  => 'armv6l',
+    'i686'    => '386',
+    'x86_64'  => 'amd64',
+    default   => $facts['os']['hardware']
+```
+
+##### <a name="-golang--source"></a>`source`
 
 Data type: `String[1]`
 

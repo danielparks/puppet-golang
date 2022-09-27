@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+**Bugfixes**
+
+* Used pre-release version of Puppet Strings to (mostly) fix parameter default
+  values in [REFERENCE.md](REFERENCE.md).
+
 ## Release 1.0.7
 
 **Features**

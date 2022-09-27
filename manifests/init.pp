@@ -1,4 +1,4 @@
-# @summary Install go in /usr/local/go and /usr/local/bin
+# @summary Install go in `/usr/local/go` and `/usr/local/bin`
 #
 # `/usr/local/share/` *must* exist.
 #
