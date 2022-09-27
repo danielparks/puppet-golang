@@ -19,8 +19,11 @@ AllCops:
   - "**/Vagrantfile"
   - "**/Guardfile"
 Layout/LineLength:
-  Description: People have wide screens, use them.
-  Max: 200
+  Description: 80 characters works well pretty much everywhere
+  Max: 80
+  Exclude:
+  - spec/spec_helper.rb
+  - spec/spec_helper_acceptance.rb
 RSpec/BeforeAfterAll:
   Description: Beware of using after(:all) as it may cause state to leak between tests.
     A necessary evil in acceptance testing.
@@ -71,6 +74,12 @@ Style/TrailingCommaInArrayLiteral:
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
+Style/GuardClause:
+  Description: Postfix conditionals are sometimes ambiguous and often harder to read.
+  Enabled: false
+Style/Next:
+  Description: Using next instead of if often makes things harder to read.
+  Enabled: false
 RSpec/MessageSpies:
   EnforcedStyle: receive
 Style/Documentation:

@@ -1,0 +1,35 @@
+name: PR checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - $default-branch
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - run: gem install --no-document --minimal-deps pdk
+    - run: pdk validate
+
+  test-unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - run: gem install --no-document --minimal-deps pdk
+    - run: pdk test unit

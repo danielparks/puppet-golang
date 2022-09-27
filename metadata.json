@@ -41,7 +41,7 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "8"
+        "9"
       ]
     },
     {
@@ -53,19 +53,19 @@
     {
       "operatingsystem": "Fedora",
       "operatingsystemrelease": [
-        "25"
-      ]
-    },
-    {
-      "operatingsystem": "SLES",
-      "operatingsystemrelease": [
-        "12"
+        "32"
       ]
     },
     {
       "operatingsystem": "Darwin",
       "operatingsystemrelease": [
-        "16"
+        "20"
+      ]
+    },
+    {
+      "operatingsystem": "SLES",
+      "operatingsystemrelease": [
+        "15"
       ]
     }
   ],
