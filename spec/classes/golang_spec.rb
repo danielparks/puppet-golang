@@ -7,7 +7,17 @@ describe 'golang' do
     context "on #{os}" do
       let(:facts) { os_facts }
 
-      it { is_expected.to compile }
+      describe 'default' do
+        it { is_expected.to compile }
+      end
+
+      describe 'ensure => absent' do
+        let(:params) do
+          { ensure: 'absent' }
+        end
+
+        it { is_expected.to compile }
+      end
     end
   end
 end

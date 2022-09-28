@@ -20,12 +20,22 @@ Most people will not need to change any parameter other than `$version`.
 
 The following parameters are available in the `golang` class:
 
+* [`ensure`](#-golang--ensure)
 * [`version`](#-golang--version)
 * [`link_binaries`](#-golang--link_binaries)
 * [`source_prefix`](#-golang--source_prefix)
 * [`os`](#-golang--os)
 * [`arch`](#-golang--arch)
 * [`source`](#-golang--source)
+
+##### <a name="-golang--ensure"></a>`ensure`
+
+Data type: `Enum[present, absent]`
+
+* `present`: Make sure go is installed.
+* `absent`: Make sure go is uninstalled.
+
+Default value: `present`
 
 ##### <a name="-golang--version"></a>`version`
 

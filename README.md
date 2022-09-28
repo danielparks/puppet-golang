@@ -18,6 +18,14 @@ class { 'golang':
 }
 ```
 
+To uninstall Go, just do:
+
+``` puppet
+class { 'golang':
+  ensure => absent,
+}
+```
+
 ## Limitations
 
 This does not support Windows.
