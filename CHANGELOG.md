@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+**Features**
+
+* Added `ensure` parameter to allow uninstalling Go.
+
 **Bugfixes**
 
 * Used pre-release version of Puppet Strings to (mostly) fix parameter default
