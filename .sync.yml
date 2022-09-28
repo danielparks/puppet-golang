@@ -14,6 +14,8 @@ common:
   paths:
     - /.github
     - /provision.yaml
+    - /test.sh
+    - /util.sh
 
 .editorconfig:
   unmanaged: true
@@ -25,6 +27,13 @@ appveyor.yml:
   delete: true
 .travis.yml:
   delete: true
+
+Gemfile:
+  optional:
+    ':development':
+      - gem: 'puppet_litmus'
+        git: 'https://github.com/puppetlabs/puppet_litmus'
+        ref: 'main'
 
 .rubocop.yml:
   default_configs:
