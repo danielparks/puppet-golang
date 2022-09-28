@@ -16,7 +16,12 @@
 
 ### Functions
 
+* [`golang::latest_version`](#golang--latest_version): Get the lastest stable version number for Go
 * [`golang::state_file`](#golang--state_file): Figure out the default state file path for a given `$go_dir`
+
+### Data types
+
+* [`Golang::Version`](#Golang--Version): A Go version
 
 ## Classes
 
@@ -47,12 +52,12 @@ Default value: `present`
 
 ##### <a name="-golang--version"></a>`version`
 
-Data type: `String[1]`
+Data type: `Golang::Version`
 
-The version of Go to install. You can find the latest version number at
+The version of Go to install. Defaults to the latest stable version found at
 https://go.dev/dl/
 
-Default value: `'1.19.1'`
+Default value: `golang::latest_version('https://go.dev/dl/?mode=json')`
 
 ##### <a name="-golang--link_binaries"></a>`link_binaries`
 
@@ -269,12 +274,12 @@ Default value: `$name`
 
 ##### <a name="-golang--installation--version"></a>`version`
 
-Data type: `String[1]`
+Data type: `Golang::Version`
 
-The version of Go to install. You can find the latest version number at
+The version of Go to install. Defaults to the latest stable version found at
 https://go.dev/dl/
 
-Default value: `'1.19.1'`
+Default value: `golang::latest_version('https://go.dev/dl/?mode=json')`
 
 ##### <a name="-golang--installation--source_prefix"></a>`source_prefix`
 
@@ -421,6 +426,33 @@ Default value: `['go', 'gofmt']`
 
 ## Functions
 
+### <a name="golang--latest_version"></a>`golang::latest_version`
+
+Type: Ruby 4.x API
+
+Makes a request to the passed URL to find the latest stable version of Go. The
+request will be cached for 10 minutes, so repeated calls to this function will
+return the same thing for at least that amount of time.
+
+#### `golang::latest_version(Stdlib::HTTPUrl $url)`
+
+Makes a request to the passed URL to find the latest stable version of Go. The
+request will be cached for 10 minutes, so repeated calls to this function will
+return the same thing for at least that amount of time.
+
+Returns: `Golang::Version` The version number, e.g. `'1.19.1'`.
+
+Raises:
+
+* `Puppet::Error` If the URL is invalid, the request failed, it didn’t understand the returned JSON, or it couldn’t find a version that was listed as stable.
+
+##### `url`
+
+Data type: `Stdlib::HTTPUrl`
+
+The URL to check. This should usually be `'https://go.dev/dl/?mode=json'`
+unless you are getting Go from elsewhere.
+
 ### <a name="golang--state_file"></a>`golang::state_file`
 
 Type: Puppet Language
@@ -444,4 +476,12 @@ Raises:
 Data type: `Stdlib::Absolutepath`
 
 Where Go will be installed
+
+## Data types
+
+### <a name="Golang--Version"></a>`Golang::Version`
+
+Generally something like `'1.8.1'`, but may also be something like `'1.3rc1'`.
+
+Alias of `Pattern[/\A[1-9]\d*(\.\d+)*([a-z]+\d+)?\z/]`
 

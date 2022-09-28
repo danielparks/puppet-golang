@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
   Installations can be owned by root or any other user.
 * Added `golang::linked_binaries` link binaries from a Go installation into a
   `bin` directory.
+* Added `golang::latest_version($url)` function to find the latest stable
+  version of Go to install.
 
 ### Improvements
 

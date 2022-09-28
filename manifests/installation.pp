@@ -17,7 +17,7 @@
 #   The path where Go should be installed. This path will be managed by
 #   [`golang::from_tarball`](#golang--from_tarball).
 # @param version
-#   The version of Go to install. You can find the latest version number at
+#   The version of Go to install. Defaults to the latest stable version found at
 #   https://go.dev/dl/
 # @param source_prefix
 #   URL to directory that contains the archive to download.
@@ -44,7 +44,7 @@
 define golang::installation (
   Enum[present, absent]          $ensure        = present,
   Stdlib::Unixpath               $go_dir        = $name,
-  String[1]                      $version       = '1.19.1',
+  Golang::Version                $version       = golang::latest_version('https://go.dev/dl/?mode=json'),
   Stdlib::HTTPUrl                $source_prefix = 'https://go.dev/dl',
   String[1]                      $os            = $facts['kernel'] ? {
     'Linux'  => 'linux',

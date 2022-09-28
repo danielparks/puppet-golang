@@ -6,7 +6,7 @@
 #   * `present`: Make sure Go is installed.
 #   * `absent`: Make sure Go is uninstalled.
 # @param version
-#   The version of Go to install. You can find the latest version number at
+#   The version of Go to install. Defaults to the latest stable version found at
 #   https://go.dev/dl/
 # @param link_binaries
 #   The binaries to symlink into `/usr/local/bin`.
@@ -20,7 +20,7 @@
 #   URL of a binary tarball. If this is set it overrides everything else.
 class golang (
   Enum[present, absent]     $ensure        = present,
-  String[1]                 $version       = '1.19.1',
+  Golang::Version           $version       = golang::latest_version('https://go.dev/dl/?mode=json'),
   Array[String[1]]          $link_binaries = ['go', 'gofmt'],
   Stdlib::HTTPUrl           $source_prefix = 'https://go.dev/dl',
   String[1]                 $os            = $facts['kernel'] ? {
