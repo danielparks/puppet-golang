@@ -47,3 +47,5 @@
 /.devcontainer/
 /.github
 /provision.yaml
+/test.sh
+/util.sh
