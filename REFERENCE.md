@@ -12,6 +12,7 @@
 
 * [`golang::from_tarball`](#golang--from_tarball): Install Go from a binary tarball
 * [`golang::installation`](#golang--installation): Install Go in a local directory
+* [`golang::linked_binaries`](#golang--linked_binaries): Link binaries from Go installation into a directory
 
 ### Functions
 
@@ -355,6 +356,68 @@ prefix and a `.source_url` suffix. For example, if `$go_dir` is
 `'/usr/local/go'`, then this will default to `'/usr/local/.go.source_url'`.
 
 Default value: `golang::state_file($go_dir)`
+
+### <a name="golang--linked_binaries"></a>`golang::linked_binaries`
+
+Link binaries from Go installation into a directory
+
+#### Examples
+
+##### Standard usage
+
+```puppet
+golang::linked_binaries { '/usr/local/go':
+  into_bin => '/usr/local/bin',
+}
+```
+
+##### User install
+
+```puppet
+golang::linked_binaries { '/home/user/go/go':
+  into_bin => '/home/user/bin',
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `golang::linked_binaries` defined type:
+
+* [`into_bin`](#-golang--linked_binaries--into_bin)
+* [`ensure`](#-golang--linked_binaries--ensure)
+* [`go_dir`](#-golang--linked_binaries--go_dir)
+* [`binaries`](#-golang--linked_binaries--binaries)
+
+##### <a name="-golang--linked_binaries--into_bin"></a>`into_bin`
+
+Data type: `Stdlib::Unixpath`
+
+The directory to link the binaries into.
+
+##### <a name="-golang--linked_binaries--ensure"></a>`ensure`
+
+Data type: `Enum[present, absent]`
+
+* `present`: Make sure links are present.
+* `absent`: Make sure links are absent.
+
+Default value: `present`
+
+##### <a name="-golang--linked_binaries--go_dir"></a>`go_dir`
+
+Data type: `Stdlib::Unixpath`
+
+The directory where Go is installed.
+
+Default value: `$name`
+
+##### <a name="-golang--linked_binaries--binaries"></a>`binaries`
+
+Data type: `Array[String[1]]`
+
+The binaries to link.
+
+Default value: `['go', 'gofmt']`
 
 ## Functions
 

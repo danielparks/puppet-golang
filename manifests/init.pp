@@ -53,16 +53,9 @@ class golang (
     }
   }
 
-  $link_ensure = $ensure ? {
-    'present' => link,
-    default   => absent,
-  }
-
-  $link_binaries.each |$binary| {
-    file { "/usr/local/bin/${binary}":
-      ensure  => $link_ensure,
-      target  => "/usr/local/go/bin/${binary}",
-      require => Golang::From_tarball['/usr/local/go'],
-    }
+  golang::linked_binaries { '/usr/local/go':
+    ensure   => $ensure,
+    into_bin => '/usr/local/bin',
+    binaries => $link_binaries,
   }
 }
