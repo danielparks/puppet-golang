@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
+### Bug fixes
+
+* Updated minimum Puppet version to match puppet/archive. [archive version
+  4.0.0][https://forge.puppet.com/modules/puppet/archive/4.0.0] requires Puppet
+  5.5.8 or higher, so this module must as well.
+
 ## Release 1.1.0
 
 ### Features
