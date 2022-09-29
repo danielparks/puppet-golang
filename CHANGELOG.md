@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+### Features
+
+* Added `golang::installation` to allow multiple installs on the same system.
+  Installations can be owned by root or any other user.
+
 ### Improvements
 
 * Added `golang::from_tarball` to explicitly install Go from a binary tarball.
