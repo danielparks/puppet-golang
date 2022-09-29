@@ -8,6 +8,14 @@
 
 * [`golang`](#golang): Install go in `/usr/local/go` and `/usr/local/bin`
 
+### Defined types
+
+* [`golang::from_tarball`](#golang--from_tarball): Install Go from a binary tarball
+
+### Functions
+
+* [`golang::state_file`](#golang--state_file): Figure out the default state file path for a given `$go_dir`
+
 ## Classes
 
 ### <a name="golang"></a>`golang`
@@ -102,4 +110,131 @@ Data type: `Stdlib::HTTPUrl`
 URL to actual archive.
 
 Default value: `"${source_prefix}/go${version}.${os}-${arch}.tar.gz"`
+
+## Defined types
+
+### <a name="golang--from_tarball"></a>`golang::from_tarball`
+
+Install Go from a binary tarball
+
+#### Examples
+
+##### Standard usage
+
+```puppet
+golang::from_tarball { '/usr/local/go':
+  source => 'https://go.dev/dl/go1.19.1.darwin-amd64.tar.gz',
+}
+```
+
+##### Running puppet as `user`
+
+```puppet
+golang::from_tarball { '/home/user/go/go':
+  source => 'https://go.dev/dl/go1.19.1.darwin-amd64.tar.gz',
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `golang::from_tarball` defined type:
+
+* [`source`](#-golang--from_tarball--source)
+* [`ensure`](#-golang--from_tarball--ensure)
+* [`go_dir`](#-golang--from_tarball--go_dir)
+* [`owner`](#-golang--from_tarball--owner)
+* [`group`](#-golang--from_tarball--group)
+* [`mode`](#-golang--from_tarball--mode)
+* [`state_file`](#-golang--from_tarball--state_file)
+
+##### <a name="-golang--from_tarball--source"></a>`source`
+
+Data type: `Stdlib::HTTPUrl`
+
+The URL to the binary tarball to install. If the URL changes, `$path` will
+be wiped and the new tarball will be installed.
+
+##### <a name="-golang--from_tarball--ensure"></a>`ensure`
+
+Data type: `Enum[present, absent]`
+
+* `present`: Make sure Go is installed.
+* `absent`: Make sure Go is uninstalled.
+
+Default value: `present`
+
+##### <a name="-golang--from_tarball--go_dir"></a>`go_dir`
+
+Data type: `Stdlib::Unixpath`
+
+The path where the tarball should be installed. This path will be managed
+by this resource.
+
+Default value: `$name`
+
+##### <a name="-golang--from_tarball--owner"></a>`owner`
+
+Data type: `Variant[String[1], Integer[0]]`
+
+The user that should own `$go_dir`. May be a user name or a UID.
+
+Default value: `$facts['identity']['user']`
+
+##### <a name="-golang--from_tarball--group"></a>`group`
+
+Data type: `Variant[String[1], Integer[0]]`
+
+The group that should own `$go_dir`. May be a group name or a GID.
+
+Default value: `$facts['identity']['group']`
+
+##### <a name="-golang--from_tarball--mode"></a>`mode`
+
+Data type: `String[1]`
+
+The mode for `$go_dir`.
+
+Default value: `'0755'`
+
+##### <a name="-golang--from_tarball--state_file"></a>`state_file`
+
+Data type: `Stdlib::Unixpath`
+
+Where to store state information.
+
+This file will contain the URL to the tarball. If the file contents don’t
+match the URL passed in `$source`, then we know that we need to download the
+tarball and replace the installation.
+
+This defaults to a file in the same directory as `$go_dir`, but with a `.`
+prefix and a `.source_url` suffix. For example, if `$go_dir` is
+`'/usr/local/go'`, then this will default to `'/usr/local/.go.source_url'`.
+
+Default value: `golang::state_file($go_dir)`
+
+## Functions
+
+### <a name="golang--state_file"></a>`golang::state_file`
+
+Type: Puppet Language
+
+The location must be outside of `$go_dir`, and it must be writable by the
+same user (if Puppet is not being run as root).
+
+#### `golang::state_file(Stdlib::Absolutepath $go_dir)`
+
+The location must be outside of `$go_dir`, and it must be writable by the
+same user (if Puppet is not being run as root).
+
+Returns: `Stdlib::Absolutepath` Where to store the state file by default
+
+Raises:
+
+* `Puppet::Error` If `$go_dir` is `'/'` or a few other things, this will fail because there isn’t a reasonable default outside of `$go_dir` itself.
+
+##### `go_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+Where Go will be installed
 
