@@ -56,7 +56,7 @@ Default value: `['go', 'gofmt']`
 
 ##### <a name="-golang--source_prefix"></a>`source_prefix`
 
-Data type: `String[1]`
+Data type: `Stdlib::HTTPUrl`
 
 URL to directory that contains the archive to download.
 
@@ -97,7 +97,7 @@ $facts['os']['hardware'] ? {
 
 ##### <a name="-golang--source"></a>`source`
 
-Data type: `String[1]`
+Data type: `Stdlib::HTTPUrl`
 
 URL to actual archive.
 

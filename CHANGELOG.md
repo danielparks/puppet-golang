@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+### Improvements
+
+* Use [`Stdlib::HTTPUrl`][] data type for URL parameters.
+
+[`Stdlib::HTTPUrl`]: https://github.com/puppetlabs/puppetlabs-stdlib/blob/0f032a9bc557949169f565bf41e5aa1f35b17346/REFERENCE.md#stdlibhttpurl
+
 ### Bug fixes
 
 * Updated minimum Puppet version to match puppet/archive. [archive version
