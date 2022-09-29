@@ -24,7 +24,7 @@ class golang (
   Enum[present, absent] $ensure        = present,
   String[1]             $version       = '1.19.1',
   Array[String[1]]      $link_binaries = ['go', 'gofmt'],
-  String[1]             $source_prefix = 'https://go.dev/dl',
+  Stdlib::HTTPUrl       $source_prefix = 'https://go.dev/dl',
   String[1]             $os            = $facts['kernel'] ? {
     'Linux'  => 'linux',
     'Darwin' => 'darwin',
@@ -38,7 +38,7 @@ class golang (
     'x86_64'  => 'amd64',
     default   => $facts['os']['hardware'], # lint:ignore:parameter_documentation broken
   },
-  String[1]             $source        = "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
+  Stdlib::HTTPUrl       $source        = "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
 ) {
   $archive_path = '/tmp/puppet-golang.tar.gz'
 
