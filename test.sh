@@ -15,7 +15,8 @@ usage () {
   echo "  fast-init  restore to post-init state and reinstall the module"
   echo "  update     reinstall module"
   echo "  run        run tests"
-  echo "  destroy    destroy virtual machines"
+  echo "  destroy    destroy virtual machines or docker images"
+  echo "  docker-run run tests in docker (no need to init, this is all-in-one)"
 }
 
 init () {
@@ -28,6 +29,15 @@ init () {
   bolt_task_run provision::fix_secure_path path=/opt/puppetlabs/bin
   snapshot fresh
   rake litmus:install_module
+}
+
+docker-run () {
+  destroy
+  rake 'litmus:provision[docker, litmusimage/centos:7]'
+  rake 'litmus:install_agent[puppet7]'
+  rake 'litmus:install_module'
+  rake 'litmus:acceptance:parallel'
+  rake 'litmus:tear_down'
 }
 
 snapshot () {
@@ -77,7 +87,7 @@ fi
 
 for action in "$@" ; do
   case "$action" in
-    init|snapshot|restore|fast-init|update|run|destroy) "$action" ;;
+    init|snapshot|restore|fast-init|update|run|destroy|docker-run) "$action" ;;
     --help) usage ;;
     *) usage >&2 ; exit 1 ;;
   esac
