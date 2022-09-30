@@ -1,9 +1,11 @@
-# golang
+# Easily install and update Go
+
+## Usage
+
+### Standard, single install
 
 This installs Go under `/usr/local/go/`, and symlinks the binaries into
 `/usr/local/bin/`.
-
-## Usage
 
 ``` puppet
 include golang
@@ -25,6 +27,25 @@ class { 'golang':
   ensure => absent,
 }
 ```
+
+### Multiple installs
+
+You can install Go in other places and as other users using the
+`golang::installation` defined type:
+
+``` puppet
+golang::installation { '/home/user/go-1.10.4':
+  version => '1.10.4',
+  owner   => 'user',
+  group   => 'user',
+}
+
+golang::linked_binaries { '/home/user/go-1.10.4':
+  into_bin => '/home/user/bin',
+}
+```
+
+Of course, you can remove these resources with `ensure => absent`.
 
 ## Limitations
 
