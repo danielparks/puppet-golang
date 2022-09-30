@@ -1,8 +1,12 @@
-# Easily install and update Go
+# Simple yet flexible Go installations
 
-This module has good defaults to make a standard Go install easy. At the same
-time it is flexible enough to allow multiple installations of diferent versions,
-and even running Puppet as a non-root user.
+This [Puppet][] module has sane defaults to keep a standard installation simple,
+but is flexible enough to support multiple installations of diferent versions.
+
+It can be used even when [Puppet is run as a non-root user][non-root].
+
+[Puppet]: https://github.com/puppetlabs/puppet
+[non-root]: #running-puppet-as-a-non-root-user
 
 ## Usage
 
