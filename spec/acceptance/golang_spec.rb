@@ -2,7 +2,7 @@
 
 require 'spec_helper_acceptance'
 
-describe 'golang' do
+describe 'class golang' do
   context 'install with a specific version' do
     it do
       idempotent_apply(<<~'END')
@@ -29,7 +29,7 @@ describe 'golang' do
     end
 
     describe command('/usr/local/bin/go version') do
-      its(:stdout) { is_expected.to match(%r{\Ago version go1.10.4 }) }
+      its(:stdout) { is_expected.to start_with('go version go1.10.4 ') }
       its(:stderr) { is_expected.to eq '' }
       its(:exit_status) { is_expected.to eq 0 }
     end
@@ -55,7 +55,7 @@ describe 'golang' do
     end
 
     describe command('/usr/local/bin/go version') do
-      its(:stdout) { is_expected.to match(%r{\Ago version }) }
+      its(:stdout) { is_expected.to start_with('go version ') }
       its(:stderr) { is_expected.to eq '' }
       its(:exit_status) { is_expected.to eq 0 }
     end
