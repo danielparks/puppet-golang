@@ -47,6 +47,21 @@ golang::linked_binaries { '/home/user/go-1.10.4':
 
 Of course, you can remove these resources with `ensure => absent`.
 
+### Running Puppet as a non-root user
+
+You can use the defined types to install Go even when running as a non-root
+user. `owner` and `group` default to the user and group running Puppet:
+
+``` puppet
+golang::installation { '/home/me/go-1.10.4':
+  version => '1.10.4',
+}
+
+golang::linked_binaries { '/home/me/go-1.10.4':
+  into_bin => '/home/me/bin',
+}
+```
+
 ## Limitations
 
 This does not support Windows.
