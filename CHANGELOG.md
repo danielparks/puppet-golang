@@ -6,12 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+* Added option of `ensure => latest` to automatically keep Go installations at
+  the latest stable version.
 * Added `golang::installation` to allow multiple installs on the same system.
   Installations can be owned by root or any other user.
 * Added `golang::linked_binaries` link binaries from a Go installation into a
   `bin` directory.
-* Added `golang::latest_version($url)` function to find the latest stable
-  version of Go to install.
 
 ### Improvements
 

@@ -3,14 +3,101 @@
 require 'spec_helper_acceptance'
 
 describe 'defined type golang::installation' do
+  context 'repeated root installs:' do
+    context "ensure => '1.10.4'" do
+      it 'installs Go' do
+        idempotent_apply(<<~'PUPPET')
+          golang::installation { '/opt/go':
+            ensure => '1.10.4',
+          }
+        PUPPET
+      end
+
+      describe command('/opt/go/bin/go version') do
+        its(:stdout) { is_expected.to start_with('go version go1.10.4 ') }
+        its(:stderr) { is_expected.to eq '' }
+        its(:exit_status) { is_expected.to eq 0 }
+      end
+    end
+
+    context 'ensure => present' do
+      it 'causes no changes' do
+        apply_manifest(<<~'PUPPET', catch_changes: true)
+          golang::installation { '/opt/go':
+            ensure => present,
+          }
+        PUPPET
+      end
+
+      describe command('/opt/go/bin/go version') do
+        its(:stdout) { is_expected.to start_with('go version go1.10.4 ') }
+        its(:stderr) { is_expected.to eq '' }
+        its(:exit_status) { is_expected.to eq 0 }
+      end
+    end
+
+    context 'ensure => latest' do
+      it 'causes changes' do
+        apply_manifest(<<~'PUPPET', expect_changes: true)
+          golang::installation { '/opt/go':
+            ensure => latest,
+          }
+        PUPPET
+      end
+
+      describe command('/opt/go/bin/go version') do
+        its(:stdout) do
+          is_expected.to start_with('go version go').and(
+            satisfy('go version >= 1.19.1') do |v|
+              go_version = %r{\Ago version go(\d\S*) }.match(v)[1]
+              Gem::Version.new(go_version) >= Gem::Version.new('1.19.1')
+            end,
+          )
+        end
+        its(:stderr) { is_expected.to eq '' }
+        its(:exit_status) { is_expected.to eq 0 }
+      end
+    end
+
+    context 'ensure => latest again' do
+      it 'causes no changes' do
+        apply_manifest(<<~'PUPPET', catch_changes: true)
+          golang::installation { '/opt/go':
+            ensure => latest,
+          }
+        PUPPET
+      end
+    end
+
+    context 'back to ensure => present' do
+      it 'causes no changes' do
+        apply_manifest(<<~'PUPPET', catch_changes: true)
+          golang::installation { '/opt/go':
+            ensure => present,
+          }
+        PUPPET
+      end
+    end
+
+    context 'ensure => absent' do
+      it do
+        idempotent_apply(<<~'PUPPET')
+          golang::installation { '/opt/go':
+            ensure => absent,
+          }
+        PUPPET
+      end
+    end
+  end
+
   context 'multiple root installs with linked_binaries' do
     it do
       idempotent_apply(<<~'PUPPET')
         golang::installation { '/opt/go1.10.4':
-          version => '1.10.4',
+          ensure => '1.10.4',
         }
         golang::installation { '/opt/go1.19.1':
-          version => '1.19.1',
+          ensure => '1.19.1',
         }
         golang::linked_binaries { '/opt/go1.19.1':
           into_bin => '/usr/local/bin',
@@ -47,7 +134,7 @@ describe 'defined type golang::installation' do
     it do
       idempotent_apply(<<~'PUPPET')
         golang::installation { '/opt/go1.10.4':
-          version => '1.10.4',
+          ensure => '1.10.4',
         }
         golang::installation { '/opt/go1.19.1':
           ensure => absent,
@@ -113,17 +200,17 @@ describe 'defined type golang::installation' do
     it do
       idempotent_apply(<<~'PUPPET')
         golang::installation { '/home/user/go1.10.4':
-          version => '1.10.4',
-          owner   => 'user',
-          group   => 'user',
-          mode    => '0700',
+          ensure => '1.10.4',
+          owner  => 'user',
+          group  => 'user',
+          mode   => '0700',
         }
 
         golang::installation { '/home/user/go1.19.1':
-          version => '1.19.1',
-          owner   => 'user',
-          group   => 'user',
-          mode    => '0700',
+          ensure => '1.19.1',
+          owner  => 'user',
+          group  => 'user',
+          mode   => '0700',
         }
 
         golang::linked_binaries { '/home/user/go1.19.1':
@@ -178,9 +265,9 @@ describe 'defined type golang::installation' do
     it do
       idempotent_apply(<<~'PUPPET')
         golang::installation { '/home/user/go1.10.4':
-          version => '1.10.4',
-          owner   => 'user',
-          group   => 'user',
+          ensure => '1.10.4',
+          owner  => 'user',
+          group  => 'user',
         }
         golang::installation { '/home/user/go1.19.1':
           ensure => absent,

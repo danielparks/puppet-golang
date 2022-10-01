@@ -2,7 +2,7 @@
   "name": "dp-golang",
   "version": "1.1.0",
   "author": "Daniel Parks",
-  "summary": "Simple yet flexible Go installations. Allows multiple installations, and may be run as non-root.",
+  "summary": "Simple yet flexible Go installations. Allows automatic updates, multiple installations, and may be run as non-root.",
   "license": "Apache-2.0",
   "source": "https://github.com/danielparks/puppet-golang",
   "project_page": "https://github.com/danielparks/puppet-golang",

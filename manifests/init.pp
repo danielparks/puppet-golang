@@ -1,13 +1,17 @@
 # @summary Install go in `/usr/local/go` and `/usr/local/bin`
 #
-# Most people will not need to change any parameter other than `$version`.
+# Most people will not need to change any parameter other than perhaps setting
+# `$ensure` to `latest`.
 #
 # @param ensure
-#   * `present`: Make sure Go is installed.
+#   * `present`: Make sure any version of Go is installed.
+#   * `latest`: Make sure the latest stable version of Go is installed.
 #   * `absent`: Make sure Go is uninstalled.
+#   * _version_: Make sure exactly the specified version of Go is installed.
+#     For example, `'1.19.1'`.
 # @param version
-#   The version of Go to install. Defaults to the latest stable version found at
-#   https://go.dev/dl/
+#   **Deprecated.** Use `$ensure` instead. If this parameter is set it will only
+#   be honored if `$ensure` is `present`.
 # @param link_binaries
 #   The binaries to symlink into `/usr/local/bin`.
 # @param source_prefix
@@ -17,10 +21,24 @@
 # @param arch
 #   The architecture to use to determine what archive to download.
 # @param source
-#   URL of a binary tarball. If this is set it overrides everything else.
+#   **Deprecated.** Use `golang::from_tarball` instead:
+#
+#   ```puppet
+#   golang::from_tarball { '/usr/local/go':
+#     ensure => $ensure,
+#     source => $source,
+#   }
+#
+#   golang::linked_binaries { '/usr/local/go':
+#     ensure   => $ensure,
+#     into_bin => '/usr/local/bin',
+#   }
+#   ```
+#
+#   If this is set it overrides everything else except `$ensure == absent`.
 class golang (
-  Enum[present, absent]     $ensure        = present,
-  Golang::Version           $version       = golang::latest_version('https://go.dev/dl/?mode=json'),
+  Golang::Ensure            $ensure        = present,
+  Optional[Golang::Version] $version       = undef,
   Array[String[1]]          $link_binaries = ['go', 'gofmt'],
   Stdlib::HTTPUrl           $source_prefix = 'https://go.dev/dl',
   String[1]                 $os            = $facts['kernel'] ? {
@@ -38,23 +56,55 @@ class golang (
   },
   Optional[Stdlib::HTTPUrl] $source        = undef,
 ) {
+  if $version {
+    # lint:ignore:strict_indent broken
+    deprecation(
+      '$golang::version',
+      'The $version parameter on golang is deprecated; use $ensure instead.')
+    # lint:endignore
+  }
+
   if $source == undef {
+    if $version {
+      $installation_ensure = $ensure ? {
+        'present' => $version,
+        default   => $ensure
+      }
+    } else {
+      $installation_ensure = $ensure
+    }
+
     golang::installation { '/usr/local/go':
-      ensure        => $ensure,
-      version       => $version,
+      ensure        => $installation_ensure,
       source_prefix => $source_prefix,
       os            => $os,
       arch          => $arch,
     }
   } else {
+    # lint:ignore:strict_indent broken
+    deprecation(
+      '$golang::source',
+      'The $source parameter on golang is deprecated; use golang::from_tarball instead.')
+    # lint:endignore
+
+    $tarball_ensure = $ensure ? {
+      'absent' => absent,
+      default  => present,
+    }
+
     golang::from_tarball { '/usr/local/go':
-      ensure => $ensure,
+      ensure => $tarball_ensure,
       source => $source,
     }
   }
 
+  $linked_ensure = $ensure ? {
+    'absent' => absent,
+    default  => present,
+  }
+
   golang::linked_binaries { '/usr/local/go':
-    ensure   => $ensure,
+    ensure   => $linked_ensure,
     into_bin => '/usr/local/bin',
     binaries => $link_binaries,
   }

@@ -3,6 +3,11 @@
 require 'spec_helper'
 
 describe 'golang::installation' do
+  let(:pre_condition) { <<~'PUPPET' }
+    # Overide golang::latest_version to avoid dependence on https://go.dev.
+    function golang::latest_version($_url) { '1.0.0' }
+  PUPPET
+
   let(:title) { '/usr/local/go' }
   let(:params) { {} }
 

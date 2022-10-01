@@ -3,11 +3,44 @@
 require 'spec_helper_acceptance'
 
 describe 'class golang' do
+  context 'install without parameters' do
+    it { idempotent_apply('include golang') }
+
+    describe file('/usr/local/go') do
+      it { is_expected.to be_directory }
+      it { is_expected.to be_owned_by 'root' }
+    end
+
+    describe file('/usr/local/go/bin/go') do
+      it { is_expected.to be_file }
+      it { is_expected.to be_executable }
+      it { is_expected.to be_owned_by 'root' }
+    end
+
+    describe file('/usr/local/bin/go') do
+      it { is_expected.to be_symlink }
+      it { is_expected.to be_linked_to '/usr/local/go/bin/go' }
+    end
+
+    describe command('/usr/local/bin/go version') do
+      its(:stdout) do
+        is_expected.to start_with('go version go').and(
+          satisfy('go version >= 1.19.1') do |v|
+            go_version = %r{\Ago version go(\d\S*) }.match(v)[1]
+            Gem::Version.new(go_version) >= Gem::Version.new('1.19.1')
+          end,
+        )
+      end
+      its(:stderr) { is_expected.to eq '' }
+      its(:exit_status) { is_expected.to eq 0 }
+    end
+  end
+
   context 'install with a specific version' do
     it do
       idempotent_apply(<<~'END')
         class { 'golang':
-          version => '1.10.4',
+          ensure => '1.10.4',
         }
       END
     end
@@ -30,32 +63,6 @@ describe 'class golang' do
 
     describe command('/usr/local/bin/go version') do
       its(:stdout) { is_expected.to start_with('go version go1.10.4 ') }
-      its(:stderr) { is_expected.to eq '' }
-      its(:exit_status) { is_expected.to eq 0 }
-    end
-  end
-
-  context 'install without parameters' do
-    it { idempotent_apply('include golang') }
-
-    describe file('/usr/local/go') do
-      it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'root' }
-    end
-
-    describe file('/usr/local/go/bin/go') do
-      it { is_expected.to be_file }
-      it { is_expected.to be_executable }
-      it { is_expected.to be_owned_by 'root' }
-    end
-
-    describe file('/usr/local/bin/go') do
-      it { is_expected.to be_symlink }
-      it { is_expected.to be_linked_to '/usr/local/go/bin/go' }
-    end
-
-    describe command('/usr/local/bin/go version') do
-      its(:stdout) { is_expected.to start_with('go version ') }
       its(:stderr) { is_expected.to eq '' }
       its(:exit_status) { is_expected.to eq 0 }
     end
