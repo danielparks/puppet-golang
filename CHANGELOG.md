@@ -6,14 +6,19 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-* Added option of `ensure => latest` to automatically keep Go installations at
-  the latest stable version.
-* Added `golang::installation` to allow multiple installs of standard Go
+* Added option of [`ensure => latest`][] to automatically keep Go installations
+  at the latest stable version.
+* Added [`golang::installation`][] to allow multiple installs of standard Go
   packages from https://go.dev/dl on the same system. Installations can be owned
   by any user.
-* Added `golang::from_tarball` to explicitly install Go from a binary tarball.
-* Added `golang::linked_binaries` link binaries from a Go installation into a
-  `bin` directory.
+* Added [`golang::from_tarball`][] to explicitly install from a binary tarball.
+* Added [`golang::linked_binaries`][] link binaries from a Go installation into
+  a `bin` directory.
+
+[`ensure => latest`]: REFERENCE.md#-golang--ensure
+[`golang::installation`]: REFERENCE.md#golang--installation
+[`golang::from_tarball`]: REFERENCE.md#golang--from_tarball
+[`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
 
 ### Improvements
 
@@ -37,7 +42,9 @@ All notable changes to this project will be documented in this file.
 ### Bug fixes
 
 * Used pre-release version of Puppet Strings to (mostly) fix parameter default
-  values in [REFERENCE.md](REFERENCE.md).
+  values in [REFERENCE.md][].
+
+[REFERENCE.md]: REFERENCE.md
 
 ## Release 1.0.7
 
