@@ -8,15 +8,15 @@ All notable changes to this project will be documented in this file.
 
 * Added option of `ensure => latest` to automatically keep Go installations at
   the latest stable version.
-* Added `golang::installation` to allow multiple installs on the same system.
-  Installations can be owned by root or any other user.
+* Added `golang::installation` to allow multiple installs of standard Go
+  packages from https://go.dev/dl on the same system. Installations can be owned
+  by any user.
+* Added `golang::from_tarball` to explicitly install Go from a binary tarball.
 * Added `golang::linked_binaries` link binaries from a Go installation into a
   `bin` directory.
 
 ### Improvements
 
-* Added `golang::from_tarball` to explicitly install Go from a binary tarball.
-  This can be used to make multiple installations as root or non-root users.
 * Use [`Stdlib::HTTPUrl`][] data type for URL parameters.
 
 [`Stdlib::HTTPUrl`]: https://github.com/puppetlabs/puppetlabs-stdlib/blob/0f032a9bc557949169f565bf41e5aa1f35b17346/REFERENCE.md#stdlibhttpurl
