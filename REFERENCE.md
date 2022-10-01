@@ -16,13 +16,20 @@
 
 ### Functions
 
+* [`golang::latest_version`](#golang--latest_version): Get the lastest stable version number for Go
 * [`golang::state_file`](#golang--state_file): Figure out the default state file path for a given `$go_dir`
+
+### Data types
+
+* [`Golang::Ensure`](#Golang--Ensure): Valid ensure values for `golang::installation`
+* [`Golang::Version`](#Golang--Version): A Go version
 
 ## Classes
 
 ### <a name="golang"></a>`golang`
 
-Most people will not need to change any parameter other than `$version`.
+Most people will not need to change any parameter other than perhaps setting
+`$ensure` to `latest`.
 
 #### Parameters
 
@@ -38,21 +45,24 @@ The following parameters are available in the `golang` class:
 
 ##### <a name="-golang--ensure"></a>`ensure`
 
-Data type: `Enum[present, absent]`
+Data type: `Golang::Ensure`
 
-* `present`: Make sure Go is installed.
+* `present`: Make sure any version of Go is installed.
+* `latest`: Make sure the latest stable version of Go is installed.
 * `absent`: Make sure Go is uninstalled.
+* _version_: Make sure exactly the specified version of Go is installed.
+  For example, `'1.19.1'`.
 
 Default value: `present`
 
 ##### <a name="-golang--version"></a>`version`
 
-Data type: `String[1]`
+Data type: `Optional[Golang::Version]`
 
-The version of Go to install. You can find the latest version number at
-https://go.dev/dl/
+**Deprecated.** Use `$ensure` instead. If this parameter is set it will only
+be honored if `$ensure` is `present`.
 
-Default value: `'1.19.1'`
+Default value: `undef`
 
 ##### <a name="-golang--link_binaries"></a>`link_binaries`
 
@@ -107,7 +117,21 @@ $facts['os']['hardware'] ? {
 
 Data type: `Optional[Stdlib::HTTPUrl]`
 
-URL of a binary tarball. If this is set it overrides everything else.
+**Deprecated.** Use `golang::from_tarball` instead:
+
+```puppet
+golang::from_tarball { '/usr/local/go':
+  ensure => $ensure,
+  source => $source,
+}
+
+golang::linked_binaries { '/usr/local/go':
+  ensure   => $ensure,
+  into_bin => '/usr/local/bin',
+}
+```
+
+If this is set it overrides everything else except `$ensure == absent`.
 
 Default value: `undef`
 
@@ -151,14 +175,16 @@ The following parameters are available in the `golang::from_tarball` defined typ
 
 Data type: `Stdlib::HTTPUrl`
 
-The URL to the binary tarball to install. If the URL changes, `$path` will
-be wiped and the new tarball will be installed.
+The URL to the binary tarball to install. If the URL changes and `$ensure`
+is `present`, `$go_dir` will be wiped and the new tarball will be installed.
 
 ##### <a name="-golang--from_tarball--ensure"></a>`ensure`
 
-Data type: `Enum[present, absent]`
+Data type: `Enum[present, any_version, absent]`
 
-* `present`: Make sure Go is installed.
+* `present`: Make sure Go is installed from `$source`.
+* `any_version`: Make sure Go is installed regardless of what version it is.
+  This will not upgrade Go if `$source` changes.
 * `absent`: Make sure Go is uninstalled.
 
 Default value: `present`
@@ -218,7 +244,7 @@ Install Go in a local directory
 
 #### Examples
 
-##### Simple
+##### Simple: install once and never update
 
 ```puppet
 golang::installation { '/usr/local/go': }
@@ -228,9 +254,17 @@ golang::installation { '/usr/local/go': }
 
 ```puppet
 golang::installation { '/home/user/go/go':
-  version => '1.10.4',
-  owner   => 'user',
-  group   => 'user',
+  ensure => latest,
+  owner  => 'user',
+  group  => 'user',
+}
+```
+
+##### A specific version
+
+```puppet
+golang::installation { '/usr/local/go-1.19.1':
+  ensure => '1.19.1',
 }
 ```
 
@@ -240,7 +274,6 @@ The following parameters are available in the `golang::installation` defined typ
 
 * [`ensure`](#-golang--installation--ensure)
 * [`go_dir`](#-golang--installation--go_dir)
-* [`version`](#-golang--installation--version)
 * [`source_prefix`](#-golang--installation--source_prefix)
 * [`os`](#-golang--installation--os)
 * [`arch`](#-golang--installation--arch)
@@ -251,10 +284,13 @@ The following parameters are available in the `golang::installation` defined typ
 
 ##### <a name="-golang--installation--ensure"></a>`ensure`
 
-Data type: `Enum[present, absent]`
+Data type: `Golang::Ensure`
 
-* `present`: Make sure Go is installed.
+* `present`: Make sure any version of Go is installed.
+* `latest`: Make sure the latest stable version of Go is installed.
 * `absent`: Make sure Go is uninstalled.
+* _version_: Make sure exactly the specified version of Go is installed.
+  For example, `'1.19.1'`.
 
 Default value: `present`
 
@@ -266,15 +302,6 @@ The path where Go should be installed. This path will be managed by
 [`golang::from_tarball`](#golang--from_tarball).
 
 Default value: `$name`
-
-##### <a name="-golang--installation--version"></a>`version`
-
-Data type: `String[1]`
-
-The version of Go to install. You can find the latest version number at
-https://go.dev/dl/
-
-Default value: `'1.19.1'`
 
 ##### <a name="-golang--installation--source_prefix"></a>`source_prefix`
 
@@ -421,6 +448,33 @@ Default value: `['go', 'gofmt']`
 
 ## Functions
 
+### <a name="golang--latest_version"></a>`golang::latest_version`
+
+Type: Ruby 4.x API
+
+Makes a request to the passed URL to find the latest stable version of Go. The
+request will be cached for 10 minutes, so repeated calls to this function will
+return the same thing for at least that amount of time.
+
+#### `golang::latest_version(Stdlib::HTTPUrl $url)`
+
+Makes a request to the passed URL to find the latest stable version of Go. The
+request will be cached for 10 minutes, so repeated calls to this function will
+return the same thing for at least that amount of time.
+
+Returns: `Golang::Version` The version number, e.g. `'1.19.1'`.
+
+Raises:
+
+* `Puppet::Error` If the URL is invalid, the request failed, it didn’t understand the returned JSON, or it couldn’t find a version that was listed as stable.
+
+##### `url`
+
+Data type: `Stdlib::HTTPUrl`
+
+The URL to check. This should usually be `'https://go.dev/dl/?mode=json'`
+unless you are getting Go from elsewhere.
+
 ### <a name="golang--state_file"></a>`golang::state_file`
 
 Type: Puppet Language
@@ -444,4 +498,18 @@ Raises:
 Data type: `Stdlib::Absolutepath`
 
 Where Go will be installed
+
+## Data types
+
+### <a name="Golang--Ensure"></a>`Golang::Ensure`
+
+Valid ensure values for `golang::installation`
+
+Alias of `Variant[Enum[present, latest, absent], Golang::Version]`
+
+### <a name="Golang--Version"></a>`Golang::Version`
+
+Generally something like `'1.8.1'`, but may also be something like `'1.3rc1'`.
+
+Alias of `Pattern[/\A[1-9]\d*(\.\d+)*([a-z]+\d+)?\z/]`
 

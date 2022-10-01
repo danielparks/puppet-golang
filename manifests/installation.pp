@@ -1,24 +1,29 @@
 # @summary Install Go in a local directory
 #
-# @example Simple
+# @example Simple: install once and never update
 #   golang::installation { '/usr/local/go': }
 #
 # @example For a user
 #   golang::installation { '/home/user/go/go':
-#     version => '1.10.4',
-#     owner   => 'user',
-#     group   => 'user',
+#     ensure => latest,
+#     owner  => 'user',
+#     group  => 'user',
+#   }
+#
+# @example A specific version
+#   golang::installation { '/usr/local/go-1.19.1':
+#     ensure => '1.19.1',
 #   }
 #
 # @param ensure
-#   * `present`: Make sure Go is installed.
+#   * `present`: Make sure any version of Go is installed.
+#   * `latest`: Make sure the latest stable version of Go is installed.
 #   * `absent`: Make sure Go is uninstalled.
+#   * _version_: Make sure exactly the specified version of Go is installed.
+#     For example, `'1.19.1'`.
 # @param go_dir
 #   The path where Go should be installed. This path will be managed by
 #   [`golang::from_tarball`](#golang--from_tarball).
-# @param version
-#   The version of Go to install. You can find the latest version number at
-#   https://go.dev/dl/
 # @param source_prefix
 #   URL to directory that contains the archive to download.
 # @param os
@@ -42,9 +47,8 @@
 #   prefix and a `.source_url` suffix. For example, if `$go_dir` is
 #   `'/usr/local/go'`, then this will default to `'/usr/local/.go.source_url'`.
 define golang::installation (
-  Enum[present, absent]          $ensure        = present,
+  Golang::Ensure                 $ensure        = present,
   Stdlib::Unixpath               $go_dir        = $name,
-  String[1]                      $version       = '1.19.1',
   Stdlib::HTTPUrl                $source_prefix = 'https://go.dev/dl',
   String[1]                      $os            = $facts['kernel'] ? {
     'Linux'  => 'linux',
@@ -64,8 +68,22 @@ define golang::installation (
   String[1]                      $mode          = '0755',
   Stdlib::Unixpath               $state_file    = golang::state_file($go_dir),
 ) {
+  $version = $ensure ? {
+    # The version for present is the version to install it’s presently absent.
+    'present'       => golang::latest_version('https://go.dev/dl/?mode=json'),
+    'latest'        => golang::latest_version('https://go.dev/dl/?mode=json'),
+    'absent'        => '1.0.0',
+    Golang::Version => $ensure,
+  }
+
+  $tarball_ensure = $ensure ? {
+    'present' => any_version,
+    'absent'  => absent,
+    default   => present,
+  }
+
   golang::from_tarball { $go_dir:
-    ensure     => $ensure,
+    ensure     => $tarball_ensure,
     source     => "${source_prefix}/go${version}.${os}-${arch}.tar.gz",
     owner      => $owner,
     group      => $group,
