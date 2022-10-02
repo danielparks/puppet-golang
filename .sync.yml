@@ -16,6 +16,7 @@ common:
     - /provision.yaml
     - /test.sh
     - /util.sh
+    - /release.rb
 
 .editorconfig:
   unmanaged: true

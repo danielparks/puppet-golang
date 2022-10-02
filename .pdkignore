@@ -49,3 +49,4 @@
 /provision.yaml
 /test.sh
 /util.sh
+/release.rb
