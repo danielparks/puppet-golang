@@ -6,19 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-* Added option of [`ensure => latest`][] to automatically keep Go installations
-  at the latest stable version.
+* Added option of [`ensure => latest`][$golang::ensure] to automatically keep Go
+  installations at the latest stable version.
 * Added [`golang::installation`][] to allow multiple installs of standard Go
   packages from https://go.dev/dl on the same system. Installations can be owned
   by any user.
 * Added [`golang::from_tarball`][] to explicitly install from a binary tarball.
 * Added [`golang::linked_binaries`][] link binaries from a Go installation into
   a `bin` directory.
-
-[`ensure => latest`]: REFERENCE.md#-golang--ensure
-[`golang::installation`]: REFERENCE.md#golang--installation
-[`golang::from_tarball`]: REFERENCE.md#golang--from_tarball
-[`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
 
 ### Improvements
 
@@ -32,6 +27,20 @@ All notable changes to this project will be documented in this file.
   4.0.0][archive4] requires Puppet 5.5.8 or higher, so this module must as well.
 
 [archive4]: https://forge.puppet.com/modules/puppet/archive/4.0.0
+
+### Deprecations
+
+* The [`$version`][$golang::version] parameter on `golang` is now deprecated.
+  Pass the version to [`$ensure`][$golang::ensure] instead.
+* The [`$source`][$golang::source] parameter on `golang` is now deprecated.
+  Use [`golang::from_tarball`][] instead.
+
+[`golang::installation`]: REFERENCE.md#golang--installation
+[`golang::from_tarball`]: REFERENCE.md#golang--from_tarball
+[`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
+[$golang::version]: REFERENCE.md#-golang--version
+[$golang::ensure]: REFERENCE.md#-golang--ensure
+[$golang::source]: REFERENCE.md#-golang--source
 
 ## Release 1.1.0
 
