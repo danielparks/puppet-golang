@@ -8,7 +8,8 @@ is_pe: false
 macaddress: "AA:AA:AA:AA:AA:AA"
 identity:
   gid: 0
-  group: "wheel"
+  group: wheel
   privileged: true
   uid: 0
-  user: "root"
+  user: root
+

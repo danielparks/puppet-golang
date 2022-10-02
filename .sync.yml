@@ -51,3 +51,12 @@ Gemfile:
     Style/Next:
       Description: 'Using next instead of if often makes things harder to read.'
       Enabled: false
+
+spec/default_facts.yml:
+  extra_facts:
+    identity:
+      gid: 0
+      group: "wheel"
+      privileged: true
+      uid: 0
+      user: "root"
