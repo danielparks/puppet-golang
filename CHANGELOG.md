@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+### Bug fixes
+
+* Fix in-page anchor link in [README.md][].
+
+[README.md]: README.md
+
 ## Release 1.2.1
 
 ### Improvements

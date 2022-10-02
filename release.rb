@@ -128,7 +128,7 @@ def fix_links(root, path)
       name = match[1]
       uri = URI(match[2])
 
-      unless uri.absolute? || !uri.host.nil?
+      unless uri.absolute? || !uri.host.nil? || uri.path.empty?
         uri = root + uri
       end
 
