@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 
 ### Bug fixes
 
+* Anchor links seem to be broken on the Forge, so we now update links to
+  [REFERENCE.md][] and other markdown files to point to GitHub when making a
+  release.
 * The Hiera example in [README.md][] referenced the deprecated `golang::version`
   instead of `golang::ensure`.
 
