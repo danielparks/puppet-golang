@@ -124,6 +124,7 @@ def fix_links(root, path)
   puts "Fixing links in #{path} for Forge"
   lines = IO.readlines(path).map do |line|
     if (match = line.match(%r{\A\[(.+?)\]:\s*(.+)\Z}))
+      # A link destination on its own line ("[name]: url" syntax)
       name = match[1]
       uri = URI(match[2])
 
@@ -138,6 +139,12 @@ def fix_links(root, path)
   end
 
   IO.write(path, lines.join(''))
+end
+
+# Huge kludge. Only works on unorderd lists at the moment.
+def unwrap_markdown!(md)
+  while md.gsub!(%r{^( *)([*+-])( +\S.+?)\n\1  +([^ *+-])}, '\1\2\3 \4')
+  end
 end
 
 def update_metadata(version)
@@ -237,6 +244,8 @@ run('git', 'commit', '-m', 'Add “## main branch” header back to CHANGELOG.md
 
 # Push release to GitHub
 run('git', 'push', '--tags', 'origin', 'main', dry_run: dry_run)
+
+unwrap_markdown!(release_notes)
 
 run('gh', 'release', 'create',
   '--title', "#{version}: #{summary}",
