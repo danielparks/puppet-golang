@@ -192,13 +192,13 @@ File.write('CHANGELOG.md', changelog.join(''))
 update_metadata(version)
 
 run('git', 'add', 'CHANGELOG.md', 'metadata.json')
-run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
-  dry_run: dry_run)
 
 run('pdk', 'validate')
 run('pdk', 'test', 'unit')
 run('./test.sh', 'docker-run')
 
+run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
+  dry_run: dry_run)
 run('git', 'tag', "v#{version}", '-sm', <<~MSG.chomp, dry_run: dry_run)
   #{version}: #{summary}
 
