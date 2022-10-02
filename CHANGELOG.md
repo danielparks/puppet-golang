@@ -6,26 +6,32 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-* Added option of `ensure => latest` to automatically keep Go installations at
-  the latest stable version.
-* Added `golang::installation` to allow multiple installs on the same system.
-  Installations can be owned by root or any other user.
-* Added `golang::linked_binaries` link binaries from a Go installation into a
-  `bin` directory.
+* Added option of [`ensure => latest`][] to automatically keep Go installations
+  at the latest stable version.
+* Added [`golang::installation`][] to allow multiple installs of standard Go
+  packages from https://go.dev/dl on the same system. Installations can be owned
+  by any user.
+* Added [`golang::from_tarball`][] to explicitly install from a binary tarball.
+* Added [`golang::linked_binaries`][] link binaries from a Go installation into
+  a `bin` directory.
+
+[`ensure => latest`]: REFERENCE.md#-golang--ensure
+[`golang::installation`]: REFERENCE.md#golang--installation
+[`golang::from_tarball`]: REFERENCE.md#golang--from_tarball
+[`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
 
 ### Improvements
 
-* Added `golang::from_tarball` to explicitly install Go from a binary tarball.
-  This can be used to make multiple installations as root or non-root users.
 * Use [`Stdlib::HTTPUrl`][] data type for URL parameters.
 
 [`Stdlib::HTTPUrl`]: https://github.com/puppetlabs/puppetlabs-stdlib/blob/0f032a9bc557949169f565bf41e5aa1f35b17346/REFERENCE.md#stdlibhttpurl
 
 ### Bug fixes
 
-* Updated minimum Puppet version to match puppet/archive. [archive version
-  4.0.0][https://forge.puppet.com/modules/puppet/archive/4.0.0] requires Puppet
-  5.5.8 or higher, so this module must as well.
+* Updated minimum Puppet version to match puppet/archive. [Archive version
+  4.0.0][archive4] requires Puppet 5.5.8 or higher, so this module must as well.
+
+[archive4]: https://forge.puppet.com/modules/puppet/archive/4.0.0
 
 ## Release 1.1.0
 
@@ -36,7 +42,9 @@ All notable changes to this project will be documented in this file.
 ### Bug fixes
 
 * Used pre-release version of Puppet Strings to (mostly) fix parameter default
-  values in [REFERENCE.md](REFERENCE.md).
+  values in [REFERENCE.md][].
+
+[REFERENCE.md]: REFERENCE.md
 
 ## Release 1.0.7
 
