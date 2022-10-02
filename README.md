@@ -11,8 +11,8 @@ diferent versions, and running [Puppet as a non-root user][non-root].
 
 ### Standard, single install
 
-This installs Go under `/usr/local/go/`, and symlinks the binaries into
-`/usr/local/bin/`.
+The [`golang` class][`golang`] installs Go under `/usr/local/go/`, and symlinks
+the binaries into `/usr/local/bin/`.
 
 ``` puppet
 include golang
@@ -20,8 +20,8 @@ include golang
 
 By default it installs the latest version but never upgrades it after the
 initial installation. You can set it to automatically upgrade by passing
-`latest` to `ensure`, either with hiera (`golang::version: latest`), or with
-a class declaration:
+`latest` to [`ensure`][$golang::ensure], either with [hiera][]
+(`golang::ensure: latest`), or with a class declaration:
 
 ``` puppet
 class { 'golang':
@@ -29,7 +29,8 @@ class { 'golang':
 }
 ```
 
-You may force it to install a specific version by passing it to `ensure`:
+You may force it to install a specific version by passing it to
+[`ensure`][$golang::ensure]:
 
 ``` puppet
 class { 'golang':
@@ -37,7 +38,7 @@ class { 'golang':
 }
 ```
 
-Of course, you can also use `ensure` to uninstall Go:
+Of course, you can also use [`ensure`][$golang::ensure] to uninstall Go:
 
 ``` puppet
 class { 'golang':
@@ -48,7 +49,8 @@ class { 'golang':
 ### Multiple installs
 
 You can install Go in other places and as other users using the
-`golang::installation` defined type:
+[`golang::installation`][] defined type, and you can link its binaries into
+a `bin` directory with [`golang::linked_binaries`][]:
 
 ``` puppet
 golang::installation { '/home/user/go-1.19.1':
@@ -62,13 +64,15 @@ golang::linked_binaries { '/home/user/go-1.19.1':
 }
 ```
 
-To install the latest version, set `ensure => latest` on `golang::installation`.
-To remove the installation or symlinks, just use `ensure => absent`.
+To install the latest version, set [`ensure => latest`][$g::i::ensure] on
+[`golang::installation`][]. To remove the installation or symlinks, just use
+`ensure => absent`.
 
 ### Running Puppet as a non-root user
 
 You can use the defined types to install Go even when running as a non-root
-user. `owner` and `group` default to the user and group running Puppet:
+user. [`owner`][$g::i::owner] and [`group`][$g::i::group] default to the user
+and group running Puppet:
 
 ``` puppet
 golang::installation { '/home/me/go':
@@ -86,9 +90,19 @@ This does not support Windows.
 
 ## Reference
 
-There is specific documentation for individual parameters in
-[REFERENCE.md](REFERENCE.md). That file is generated with:
+There is specific documentation for individual parameters in [REFERENCE.md][].
+That file is generated with:
 
 ```
 pdk bundle exec puppet strings generate --format markdown
 ```
+
+[REFERENCE.md]: REFERENCE.md
+[`golang`]: REFERENCE.md#golang
+[$golang::ensure]: REFERENCE.md#-golang--ensure
+[`golang::installation`]: REFERENCE.md#golang--installation
+[$g::i::ensure]: REFERENCE.md#-golang--installation--ensure
+[$g::i::owner]: REFERENCE.md#-golang--installation--owner
+[$g::i::group]: REFERENCE.md#-golang--installation--group
+[`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
+[hiera]: https://puppet.com/docs/puppet/latest/hiera.html

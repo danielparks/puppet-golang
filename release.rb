@@ -3,20 +3,24 @@
 # rubocop:disable Style/WhileUntilModifier
 
 require 'getoptlong'
+require 'json'
 require 'rdoc'
 require 'shellwords'
 require 'uri'
 
 def usage
   <<~'TEXT'
-    ./release.rb [--forge-token TOKEN] [--dry-run] VERSION SUMMARY
+    ./release.rb [--forge-token TOKEN] [options...] VERSION SUMMARY
 
       Make a release.
 
+      VERSION   the version to release. Will be set in metadata.json
+      SUMMARY   the one line summary of the release
+
       --forge-token TOKEN  may be left off if $PDK_FORGE_TOKEN is set
       --dry-run            don’t commit or publish any changes
-      VERSION              the version to release. Will be set in metadata.json
-      SUMMARY              the one line summary of the release
+      --just-forge-update  just update files as if we were going to build a
+                           package to upload to the Forge
 
     ./release.rb --help
 
@@ -35,20 +39,24 @@ opts = GetoptLong.new(
   [ '--help', '-h', GetoptLong::NO_ARGUMENT ],
   [ '--dry-run', '-n', GetoptLong::NO_ARGUMENT ],
   [ '--forge-token', '-t', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--just-forge-update', GetoptLong::NO_ARGUMENT ],
 )
 
 forge_token = ENV['PDK_FORGE_TOKEN']
 dry_run = false
+just_forge_update = false
 
 opts.each do |opt, arg|
   case opt
   when '--help'
     print usage
     exit 0
-  when '--dry-run'
-    dry_run = true
   when '--forge-token'
     forge_token = arg
+  when '--dry-run'
+    dry_run = true
+  when '--just-forge-update'
+    just_forge_update = true
   end
 end
 
@@ -91,7 +99,7 @@ def extract_changes_for_release!(changelog, version)
   end
 
   # Trim blank lines off end of release notes
-  while release_notes.last.match?(%r{\A\s*\z})
+  while %r{\A\s*\z}.match?(release_notes.last)
     release_notes.pop
   end
 
@@ -112,24 +120,16 @@ def insert_main_branch_header!(changelog)
   line.insert(0, "## main branch\n\n")
 end
 
-def fix_links(path)
+def fix_links(root, path)
   puts "Fixing links in #{path} for Forge"
   lines = IO.readlines(path).map do |line|
     if (match = line.match(%r{\A\[(.+?)\]:\s*(.+)\Z}))
+      # A link destination on its own line ("[name]: url" syntax)
       name = match[1]
       uri = URI(match[2])
 
       unless uri.absolute? || !uri.host.nil?
-        case uri.path
-        when 'CHANGELOG.md'
-          uri.path = 'changelog'
-        when 'README.md'
-          uri.path = 'readme'
-        when 'REFERENCE.md'
-          uri.path = 'reference'
-        when 'LICENSE'
-          uri.path = 'license'
-        end
+        uri = root + uri
       end
 
       "[#{name}]: #{uri}\n"
@@ -141,11 +141,25 @@ def fix_links(path)
   IO.write(path, lines.join(''))
 end
 
+# Huge kludge. Only works on unorderd lists at the moment.
+def unwrap_markdown!(md)
+  while md.gsub!(%r{^( *)([*+-])( +\S.+?)\n\1  +([^ *+-])}, '\1\2\3 \4')
+  end
+end
+
 def update_metadata(version)
   puts "Updating metadata.json with version #{version}"
   metadata = IO.read('metadata.json')
   metadata.sub!(%r{("version"\s*:\s*)"[0-9.]+"}, %(\\1"#{version}"))
   IO.write('metadata.json', metadata)
+end
+
+# Update files for the Forge
+def update_for_forge(metadata)
+  root_uri = URI("#{metadata['source']}/blob/v#{metadata['version']}/")
+  fix_links(root_uri, 'CHANGELOG.md')
+  fix_links(root_uri, 'README.md')
+  fix_links(root_uri, 'REFERENCE.md')
 end
 
 def run(command, *args, dry_run: false)
@@ -190,6 +204,12 @@ puts "Updating CHANGELOG.md with release #{version}"
 File.write('CHANGELOG.md', changelog.join(''))
 
 update_metadata(version)
+metadata = JSON.parse(File.read('metadata.json'))
+
+if just_forge_update
+  update_for_forge(metadata)
+  exit(0)
+end
 
 run('git', 'add', 'CHANGELOG.md', 'metadata.json')
 
@@ -205,10 +225,7 @@ run('git', 'tag', "v#{version}", '-sm', <<~MSG.chomp, dry_run: dry_run)
   #{release_notes}
 MSG
 
-# Update files for the Forge
-fix_links('CHANGELOG.md')
-fix_links('README.md')
-fix_links('REFERENCE.md')
+update_for_forge(metadata)
 
 run('pdk', 'build', '--force')
 run('pdk', 'release', 'publish', dry_run: dry_run)
@@ -227,6 +244,8 @@ run('git', 'commit', '-m', 'Add “## main branch” header back to CHANGELOG.md
 
 # Push release to GitHub
 run('git', 'push', '--tags', 'origin', 'main', dry_run: dry_run)
+
+unwrap_markdown!(release_notes)
 
 run('gh', 'release', 'create',
   '--title', "#{version}: #{summary}",
