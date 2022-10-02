@@ -1,58 +1,11 @@
 # This file can be used to customize the files managed by PDK.
 #
-# See https://github.com/puppetlabs/pdk-templates/blob/main/README.md
+# See https://github.com/danielparks/pdk-templates/blob/main/README.md
 # for more information.
 #
-# See https://github.com/puppetlabs/pdk-templates/blob/main/config_defaults.yml
+# See https://github.com/danielparks/pdk-templates/blob/main/config_defaults.yml
 # for the default values.
 ---
-common:
-  disable_legacy_facts: true
-
-# Files not to include in the release package
-.pdkignore:
-  paths:
-    - /.github
-    - /provision.yaml
-    - /test.sh
-    - /util.sh
-    - /release.rb
-
-.editorconfig:
-  unmanaged: true
-
-# Delete CI configuration we don’t use
-appveyor.yml:
-  delete: true
-.gitlab-ci.yml:
-  delete: true
-.travis.yml:
-  delete: true
-
-Gemfile:
-  optional:
-    ':development':
-      - gem: 'puppet_litmus'
-        git: 'https://github.com/puppetlabs/puppet_litmus'
-        ref: 'main'
-
-.rubocop.yml:
-  default_configs:
-    Layout/LineLength:
-      Description: '80 characters works well pretty much everywhere'
-      Max: 80
-      # Exclude files from PDK or official Puppet sources.
-      Exclude:
-        - spec/spec_helper.rb
-        - spec/spec_helper_acceptance.rb
-    Style/GuardClause:
-      Description: >-
-        Postfix conditionals are sometimes ambiguous and often harder to read.
-      Enabled: false
-    Style/Next:
-      Description: 'Using next instead of if often makes things harder to read.'
-      Enabled: false
-
 spec/default_facts.yml:
   extra_facts:
     identity:
@@ -61,3 +14,9 @@ spec/default_facts.yml:
       privileged: true
       uid: 0
       user: "root"
+
+.github/workflows/pr-checks.yaml:
+  validate-REFERENCE.md: false
+
+release.rb:
+  validate-REFERENCE.md: false

@@ -47,6 +47,6 @@
 /.devcontainer/
 /.github
 /provision.yaml
+/release.rb
 /test.sh
 /util.sh
-/release.rb
