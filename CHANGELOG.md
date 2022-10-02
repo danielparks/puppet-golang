@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+### Improvements
+
+* Added more links to [REFERENCE.md][] from [README.md][] to make it easier to
+  find reference documentation.
+
+### Bug fixes
+
+* The Hiera example in [README.md][] referenced the deprecated `golang::version`
+  instead of `golang::ensure`.
+
+[README.md]: README.md
+[REFERENCE.md]: REFERENCE.md
+
 ## Release 1.2.0
 
 ### Features
