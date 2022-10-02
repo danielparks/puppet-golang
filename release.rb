@@ -157,9 +157,9 @@ end
 # Update files for the Forge
 def update_for_forge(metadata)
   root_uri = URI("#{metadata['source']}/blob/v#{metadata['version']}/")
-  fix_links(root_uri, 'CHANGELOG.md')
-  fix_links(root_uri, 'README.md')
-  fix_links(root_uri, 'REFERENCE.md')
+  Dir['*.md'].each do |file|
+    fix_links(root_uri, file)
+  end
 end
 
 def run(command, *args, dry_run: false)
