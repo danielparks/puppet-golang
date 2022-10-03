@@ -213,6 +213,10 @@ end
 
 run('git', 'add', 'CHANGELOG.md', 'metadata.json')
 
+puts 'Confirming that pdk update does nothing'
+run('pdk', 'update', '--force')
+run('git', 'diff', '--color', '--exit-code')
+
 run('pdk', 'validate')
 run('pdk', 'test', 'unit')
 run('./test.sh', 'docker-run')
