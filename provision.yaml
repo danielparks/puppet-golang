@@ -1,4 +1,8 @@
 ---
-default:
+vagrant:
   provisioner: vagrant
   images: ['centos/7', 'ubuntu/trusty64']
+docker:
+  provisioner: docker
+  # Can’t get any of the recent Ubuntu or Debian images to work
+  images: ['litmusimage/centos:7']

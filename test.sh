@@ -23,7 +23,7 @@ init () {
   # FIXME sometimes we just want to ensure that things are set up, and not
   # actually recreate everything
   destroy
-  rake 'litmus:provision_list[default]'
+  rake 'litmus:provision_list[vagrant]'
 
   bolt_task_run puppet_agent::install collection=puppet6 version=latest
   bolt_task_run provision::fix_secure_path path=/opt/puppetlabs/bin
@@ -33,7 +33,7 @@ init () {
 
 docker-run () {
   destroy
-  rake 'litmus:provision[docker, litmusimage/centos:7]'
+  rake 'litmus:provision_list[docker]'
   rake 'litmus:install_agent[puppet7]'
   rake 'litmus:install_module'
   rake 'litmus:acceptance:parallel'
