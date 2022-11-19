@@ -4,6 +4,7 @@
 
 require 'getoptlong'
 require 'json'
+require 'open3'
 require 'rdoc'
 require 'shellwords'
 require 'uri'
@@ -76,26 +77,30 @@ end
 def extract_changes_for_release!(changelog, version)
   release_notes = []
 
-  enumerator = changelog.to_enum
-  line = enumerator.next
-  until line.match?(%r{\A##[^#]})
-    # Skip everything up to the first level 2 heading
+  begin
+    enumerator = changelog.to_enum
     line = enumerator.next
-  end
+    until line.match?(%r{\A##[^#]})
+      # Skip everything up to the first level 2 heading
+      line = enumerator.next
+    end
 
-  # Should have found "## main branch". Replace it with the proper Release line.
-  line.replace("## Release #{version}\n")
+    # Should have found "## main branch". Replace it with "## Release..."
+    line.replace("## Release #{version}\n")
 
-  line = enumerator.next
-  while line.match?(%r{\A\s*\z})
-    # Skip blank lines
     line = enumerator.next
-  end
+    while line.match?(%r{\A\s*\z})
+      # Skip blank lines
+      line = enumerator.next
+    end
 
-  # Collect everything up to next "## Release..." line
-  until line.match?(%r{\A##[^#]})
-    release_notes << line
-    line = enumerator.next
+    # Collect everything up to next "## Release..." line
+    until line.match?(%r{\A##[^#]})
+      release_notes << line
+      line = enumerator.next
+    end
+  rescue StopIteration
+    # We ran out of file; doesn’t matter
   end
 
   # Trim blank lines off end of release notes
@@ -166,16 +171,41 @@ def run(command, *args, dry_run: false)
   shell_args = args.map { |word| Shellwords.escape(word) }.join(' ')
   if dry_run
     puts "SKIPPING: #{command} #{shell_args}"
-  else
-    puts "#{command} #{shell_args}"
-    case system(command, *args)
-    when nil
-      raise "Command #{command} not found"
-    when false
-      shell_args = args.map { |word| Shellwords.escape(word) }.join(' ')
-      raise "Command returned non-zero: #{command} #{shell_args}"
-    end
   end
+
+  puts "#{command} #{shell_args}"
+  case system(command, *args)
+  when nil
+    raise "Command #{command} not found"
+  when false
+    raise "Command returned non-zero: #{command} #{shell_args}"
+  end
+end
+
+def run_capture(command, *args, dry_run: false)
+  shell_args = args.map { |word| Shellwords.escape(word) }.join(' ')
+  if dry_run
+    puts "SKIPPING: #{command} #{shell_args}"
+    return ''
+  end
+
+  puts "#{command} #{shell_args}"
+  output, status = Open3.capture2e(command, *args)
+  unless status.success?
+    raise "Command returned non-zero: #{command} #{shell_args}"
+  end
+
+  output
+end
+
+def confirm_no_changes
+  untracked = run_capture('git', 'ls-files', '--exclude-standard', '--other')
+  unless untracked == ''
+    puts untracked
+    raise 'Found untracked files.'
+  end
+
+  run('git', 'diff', '--color', '--exit-code')
 end
 
 # There are broadly three passes to this.
@@ -195,7 +225,7 @@ end
 #
 #      Add "## main branch" back to CHANGELOG.md.
 
-# FIXME: ensure that working tree is clean?
+confirm_no_changes
 
 # Update CHANGELOG.md for release and extra the changes for the release
 changelog = IO.readlines('CHANGELOG.md')
@@ -215,11 +245,14 @@ run('git', 'add', 'CHANGELOG.md', 'metadata.json')
 
 puts 'Confirming that pdk update does nothing'
 run('pdk', 'update', '--force')
-run('git', 'diff', '--color', '--exit-code')
+confirm_no_changes
 
 run('pdk', 'validate')
 run('pdk', 'test', 'unit')
-run('./test.sh', 'docker-run')
+
+if File.exist?('spec/acceptance')
+  run('./test.sh', 'init', 'run', 'destroy')
+end
 
 run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
   dry_run: dry_run)
