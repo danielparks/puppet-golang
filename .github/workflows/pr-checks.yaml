@@ -21,6 +21,10 @@ jobs:
     - run: gem install --no-document --minimal-deps pdk
     - run: pdk validate
 
+    - run: pdk bundle exec puppet strings generate --format markdown
+    - name: Confirm REFERENCE.md is up-to-date
+      run: git diff --color --exit-code
+
     - run: pdk update --force
     - name: Confirm PDK update does nothing
       run: git diff --color --exit-code
