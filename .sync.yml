@@ -14,9 +14,3 @@ spec/default_facts.yml:
       privileged: true
       uid: 0
       user: "root"
-
-.github/workflows/pr-checks.yaml:
-  validate-REFERENCE.md: false
-
-release.rb:
-  validate-REFERENCE.md: false
