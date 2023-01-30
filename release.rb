@@ -171,6 +171,7 @@ def run(command, *args, dry_run: false)
   shell_args = args.map { |word| Shellwords.escape(word) }.join(' ')
   if dry_run
     puts "SKIPPING: #{command} #{shell_args}"
+    return
   end
 
   puts "#{command} #{shell_args}"
