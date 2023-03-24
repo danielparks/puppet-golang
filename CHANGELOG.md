@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## main branch
+## Release 1.2.3
 
 No functional changes. This release is solely to keep the released module from
 getting too far out of sync with git after multiple `pdk update`s.
