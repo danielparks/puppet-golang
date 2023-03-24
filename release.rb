@@ -22,6 +22,7 @@ def usage
       --dry-run            don’t commit or publish any changes
       --just-forge-update  just update files as if we were going to build a
                            package to upload to the Forge
+      --no-acceptance      skip acceptance tests
 
     ./release.rb --help
 
@@ -41,11 +42,13 @@ opts = GetoptLong.new(
   [ '--dry-run', '-n', GetoptLong::NO_ARGUMENT ],
   [ '--forge-token', '-t', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--just-forge-update', GetoptLong::NO_ARGUMENT ],
+  [ '--no-acceptance', GetoptLong::NO_ARGUMENT ],
 )
 
 forge_token = ENV['PDK_FORGE_TOKEN']
 dry_run = false
 just_forge_update = false
+run_acceptance = true
 
 opts.each do |opt, arg|
   case opt
@@ -58,6 +61,8 @@ opts.each do |opt, arg|
     dry_run = true
   when '--just-forge-update'
     just_forge_update = true
+  when '--no-acceptance'
+    run_acceptance = false
   end
 end
 
@@ -256,7 +261,7 @@ confirm_no_changes
 run('pdk', 'validate')
 run('pdk', 'test', 'unit')
 
-if File.exist?('spec/acceptance')
+if run_acceptance && File.exist?('spec/acceptance')
   run('./test.sh', 'init', 'run', 'destroy')
 end
 
