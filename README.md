@@ -88,6 +88,14 @@ golang::linked_binaries { '/home/me/go':
 
 This does not support Windows.
 
+## Development status
+
+This is stable. I have no features planned for the future, though I’m open to
+[suggestions][issues].
+
+I will occasionally make 0.0.1 releases to keep this updated with the latest
+version of [PDK][].
+
 ## Reference
 
 There is specific documentation for individual parameters in [REFERENCE.md][].
@@ -97,7 +105,6 @@ That file is generated with:
 pdk bundle exec puppet strings generate --format markdown
 ```
 
-[REFERENCE.md]: REFERENCE.md
 [`golang`]: REFERENCE.md#golang
 [$golang::ensure]: REFERENCE.md#-golang--ensure
 [`golang::installation`]: REFERENCE.md#golang--installation
@@ -106,3 +113,6 @@ pdk bundle exec puppet strings generate --format markdown
 [$g::i::group]: REFERENCE.md#-golang--installation--group
 [`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
 [hiera]: https://puppet.com/docs/puppet/latest/hiera.html
+[issues]: https://github.com/danielparks/puppet-golang/issues
+[PDK]: https://github.com/puppetlabs/pdk
+[REFERENCE.md]: REFERENCE.md
