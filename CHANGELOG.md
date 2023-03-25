@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+* Added a section about development status (stable; no features planned) to
+  [README.md][].
+
+[README.md]: README.md
+
 ## Release 1.2.3
 
 No functional changes. This release is solely to keep the released module from
