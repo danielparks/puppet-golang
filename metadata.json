@@ -83,7 +83,7 @@
     "go",
     "golang"
   ],
-  "pdk-version": "2.7.0",
+  "pdk-version": "2.7.1",
   "template-url": "https://github.com/danielparks/pdk-templates#main",
-  "template-ref": "heads/main-0-g98cb58a"
+  "template-ref": "heads/main-0-g936435d"
 }
