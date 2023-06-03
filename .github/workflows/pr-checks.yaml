@@ -10,15 +10,16 @@ on:
 jobs:
   validate:
     name: Validate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: "2.7"
-        bundler-cache: true
-    - run: gem install --no-document --minimal-deps pdk
+    - name: Install pdk
+      run: |
+        wget https://apt.puppet.com/puppet-tools-release-jammy.deb
+        sudo dpkg -i puppet-tools-release-jammy.deb
+        sudo apt-get update
+        sudo apt-get install -y pdk
     - run: pdk validate
 
     - run: pdk bundle exec puppet strings generate --format markdown
