@@ -1,6 +1,6 @@
 {
   "name": "dp-golang",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "author": "Daniel Parks",
   "summary": "Simple yet flexible Go installations. Allows automatic updates, multiple installations, and may be run as non-root.",
   "license": "Apache-2.0",

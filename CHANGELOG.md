@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Release 1.2.3
+## Release 1.2.4
 
 * Added a section about development status (stable; no features planned) to
   [README.md][].
