@@ -6,8 +6,10 @@ All notable changes to this project will be documented in this file.
 
 * Added a section about development status (stable; no features planned) to
   [README.md][].
+* Synced with [PDK][].
 
 [README.md]: README.md
+[PDK]: https://www.puppet.com/docs/pdk/2.x/pdk.html
 
 ## Release 1.2.3
 
