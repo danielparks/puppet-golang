@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
 ## Release 1.2.4
 
 * Added a section about development status (stable; no features planned) to
