@@ -5,7 +5,7 @@ set -e
 export UTIL_TRACE=1
 source util.sh
 
-puppet=puppet7
+puppet=puppet8
 provider=docker
 
 usage () {
@@ -14,8 +14,8 @@ usage () {
   echo "OPTION may by one of:"
   echo "  --docker      use docker for tests [default]"
   echo "  --vagrant     use vagrant for tests"
-  echo "  --puppet6 -6  run tests in Puppet 6"
-  echo "  --puppet7 -7  run tests in Puppet 7 [default]"
+  echo "  --puppet7 -7  run tests in Puppet 7"
+  echo "  --puppet8 -8  run tests in Puppet 8 [default]"
   echo ""
   echo "COMMAND may be one of:"
   echo "  init          initialize test set up"
@@ -30,8 +30,8 @@ usage () {
   echo ""
   echo "Examples:"
   echo "  $0 init run destroy"
-  echo "  $0 --vagrant -6 init run"
-  echo "  $0 --vagrant -6 fast-init run"
+  echo "  $0 --vagrant -7 init run"
+  echo "  $0 --vagrant -7 fast-init run"
 }
 
 init () {
@@ -125,11 +125,11 @@ for action in "$@" ; do
     --docker)
       provider=docker
       ;;
-    -6|--puppet6)
-      puppet=puppet6
-      ;;
     -7|--puppet7)
       puppet=puppet7
+      ;;
+    -8|--puppet8)
+      puppet=puppet8
       ;;
     --help)
       usage
