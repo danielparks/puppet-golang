@@ -7,28 +7,37 @@ on:
       - $default-branch
   pull_request:
 
+env:
+  validate_distro: jammy
+
 jobs:
   validate:
     name: Validate
+    # This needs to match $env.validate_distro:
     runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
     - name: Install pdk
       run: |
-        wget https://apt.puppet.com/puppet-tools-release-jammy.deb
-        sudo dpkg -i puppet-tools-release-jammy.deb
+        wget "https://apt.puppet.com/puppet-tools-release-${validate_distro}.deb"
+        sudo dpkg -i "puppet-tools-release-${validate_distro}.deb"
+        rm "puppet-tools-release-${validate_distro}.deb"
         sudo apt-get update
         sudo apt-get install -y pdk
     - run: pdk validate
 
-    - run: pdk bundle exec puppet strings generate --format markdown
     - name: Confirm REFERENCE.md is up-to-date
-      run: git diff --color --exit-code
+      run: |
+        pdk bundle exec puppet strings generate --format markdown
+        git add .
+        git diff --staged --color --exit-code
 
-    - run: pdk update --force
     - name: Confirm PDK update does nothing
-      run: git diff --color --exit-code
+      run: |
+        pdk update --force
+        git add .
+        git diff --staged  --color --exit-code
 
   test-unit:
     name: Unit tests
@@ -45,6 +54,10 @@ jobs:
   test-acceptance:
     name: Acceptance tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: ['litmusimage/centos:7']
+        agent: ['puppet7', 'puppet8']
 
     steps:
     - uses: actions/checkout@v3
@@ -52,7 +65,7 @@ jobs:
       with:
         ruby-version: "2.7"
         bundler-cache: true
-    - run: bundle exec rake 'litmus:provision[docker, litmusimage/centos:7]'
-    - run: bundle exec rake 'litmus:install_agent[puppet7]'
+    - run: bundle exec rake 'litmus:provision[docker, ${{ matrix.image }}]'
+    - run: bundle exec rake 'litmus:install_agent[${{ matrix.agent }}]'
     - run: bundle exec rake 'litmus:install_module'
     - run: bundle exec rake 'litmus:acceptance:parallel'
