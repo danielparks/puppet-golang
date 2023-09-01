@@ -23,6 +23,7 @@ def usage
       --just-forge-update  just update files as if we were going to build a
                            package to upload to the Forge
       --no-acceptance      skip acceptance tests
+      --no-unit            skip unit tests
 
     ./release.rb --help
 
@@ -43,12 +44,13 @@ opts = GetoptLong.new(
   [ '--forge-token', '-t', GetoptLong::REQUIRED_ARGUMENT ],
   [ '--just-forge-update', GetoptLong::NO_ARGUMENT ],
   [ '--no-acceptance', GetoptLong::NO_ARGUMENT ],
+  [ '--no-unit', GetoptLong::NO_ARGUMENT ],
 )
 
 forge_token = ENV['PDK_FORGE_TOKEN']
 dry_run = false
 just_forge_update = false
-run_acceptance = true
+run_acceptance = run_unit = true
 
 opts.each do |opt, arg|
   case opt
@@ -63,6 +65,8 @@ opts.each do |opt, arg|
     just_forge_update = true
   when '--no-acceptance'
     run_acceptance = false
+  when '--no-unit'
+    run_unit = false
   end
 end
 
@@ -259,7 +263,10 @@ run('pdk', 'update', '--force')
 confirm_no_changes
 
 run('pdk', 'validate')
-run('pdk', 'test', 'unit')
+
+if run_unit
+  run('pdk', 'test', 'unit')
+end
 
 if run_acceptance && File.exist?('spec/acceptance')
   run('./test.sh', 'init', 'run', 'destroy')
