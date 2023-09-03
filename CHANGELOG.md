@@ -7,9 +7,11 @@ All notable changes to this project will be documented in this file.
 * Updated automatic PR checks to run acceptance tests with both Puppet 7 and
   Puppet 8 (Puppet 6 is still supported by this module, but unfortunately the
   [acceptance test framework][litmus] does not support it).
+* Updated metadata to support [puppet/archive 7.0.0][archive7].
 * Synced with [PDK][].
 
 [litmus]: https://puppetlabs.github.io/litmus/
+[archive7]: https://forge.puppet.com/modules/puppet/archive/7.0.0/changelog#v700-2023-06-04
 [PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
 
 ## Release 1.2.4
