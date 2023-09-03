@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## main branch
+## Release 1.2.5
 
 * Updated automatic PR checks to run acceptance tests with both Puppet 7 and
   Puppet 8 (Puppet 6 is still supported by this module, but unfortunately the
