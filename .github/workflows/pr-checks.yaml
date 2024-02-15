@@ -7,24 +7,22 @@ on:
       - $default-branch
   pull_request:
 
-env:
-  validate_distro: jammy
-
 jobs:
   validate:
     name: Validate
-    # This needs to match $env.validate_distro:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install pdk
+    - name: Install PDK
       run: |
-        wget "https://apt.puppet.com/puppet-tools-release-${validate_distro}.deb"
-        sudo dpkg -i "puppet-tools-release-${validate_distro}.deb"
-        rm "puppet-tools-release-${validate_distro}.deb"
-        sudo apt-get update
-        sudo apt-get install -y pdk
+        set -ex
+        distro=$(lsb_release -cs)
+        curl -sSO  "https://apt.puppet.com/puppet-tools-release-${distro}.deb"
+        sudo dpkg -i "puppet-tools-release-${distro}.deb"
+        rm "puppet-tools-release-${distro}.deb"
+        sudo apt-get update -qq
+        sudo apt-get install -qy pdk
     - run: pdk validate
 
     - name: Confirm REFERENCE.md is up-to-date
