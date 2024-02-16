@@ -7,6 +7,10 @@ on:
       - $default-branch
   pull_request:
 
+env:
+  # Enable rspec color output
+  SPEC_OPTS: --force-color
+
 jobs:
   validate:
     name: Validate
@@ -51,19 +55,32 @@ jobs:
 
   test-acceptance:
     name: Acceptance tests
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        image: ['litmusimage/centos:7']
-        agent: ['puppet7', 'puppet8']
+        os:
+          - ubuntu-latest
+        agent:
+          - puppet7
+          - puppet8
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v3
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: "2.7"
-        bundler-cache: true
-    - run: bundle exec rake 'litmus:provision[docker, ${{ matrix.image }}]'
-    - run: bundle exec rake 'litmus:install_agent[${{ matrix.agent }}]'
-    - run: bundle exec rake 'litmus:install_module'
-    - run: bundle exec rake 'litmus:acceptance:parallel'
+    - name: Install Puppet
+      run: |
+        set -ex
+        distro=$(lsb_release -cs)
+        deb_name="${{ matrix.agent }}-release-${distro}.deb"
+        curl -sSO  "https://apt.puppet.com/${deb_name}"
+        sudo dpkg -i "$deb_name"
+        rm "$deb_name"
+        sudo apt-get update -qq
+        sudo apt-get install -qy puppet-agent pdk
+    - name: Build module
+      run: pdk build
+    - name: Install module
+      run: sudo -E /opt/puppetlabs/bin/puppet module install pkg/*.tar.gz
+    - name: Install PDK dependencies
+      run: sudo -E pdk bundle install
+    - name: Run acceptance tests
+      run: sudo -E pdk bundle exec rake litmus:acceptance:localhost
