@@ -6,6 +6,9 @@
 # See https://github.com/danielparks/pdk-templates/blob/main/config_defaults.yml
 # for the default values.
 ---
+.github/workflows/pr-checks.yaml:
+  additional-platforms:
+    - macos-latest
 spec/default_facts.yml:
   extra_facts:
     identity:
