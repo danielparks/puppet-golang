@@ -221,10 +221,10 @@ describe 'defined type golang::installation' do
         user { 'user':
           home       => '#{home}/user',
           gid        => 'user',
-          managehome => true,
+          managehome => false,
         }
 
-        file { '#{home}/user/bin':
+        file { ['#{home}/user', '#{home}/user/bin']:
           ensure => directory,
           owner  => 'user',
           group  => 'user',
