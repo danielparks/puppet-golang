@@ -73,7 +73,7 @@ describe 'class golang' do
       # These tests are run in order, so this isn’t strictly necessary. However,
       # I’d prefer to avoid relying on the previous tests, so here it is. In
       # order to avoid unnecessary changes, this should match the last test run
-      apply_manifest('include golang')
+      apply_manifest('include golang', catch_failures: true)
 
       idempotent_apply(<<~'END')
         class { 'golang':
