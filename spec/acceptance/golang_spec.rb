@@ -50,6 +50,13 @@ describe 'class golang' do
       its(:owner) { is_expected.to eq 'root' }
     end
 
+    describe file('/usr/local/.go.source_url') do
+      it { is_expected.to be_file }
+      its(:mode) { is_expected.to eq '444' }
+      its(:owner) { is_expected.to eq 'root' }
+      its(:content) { is_expected.to include "\nhttps://go.dev/dl/" }
+    end
+
     describe file('/usr/local/go/bin/go') do
       it { is_expected.to be_file }
       it { is_expected.to be_executable }
@@ -83,6 +90,10 @@ describe 'class golang' do
     end
 
     describe file('/usr/local/go') do
+      it { is_expected.not_to exist }
+    end
+
+    describe file('/usr/local/.go.source_url') do
       it { is_expected.not_to exist }
     end
 

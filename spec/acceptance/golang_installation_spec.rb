@@ -111,6 +111,13 @@ describe 'defined type golang::installation' do
         its(:owner) { is_expected.to eq 'root' }
       end
 
+      describe file("/opt/.go#{version}.source_url") do
+        it { is_expected.to be_file }
+        its(:mode) { is_expected.to eq '444' }
+        its(:owner) { is_expected.to eq 'root' }
+        its(:content) { is_expected.to include "\nhttps://go.dev/dl/" }
+      end
+
       describe file("/opt/go#{version}/bin/go") do
         it { is_expected.to be_file }
         it { is_expected.to be_executable }
@@ -239,6 +246,14 @@ describe 'defined type golang::installation' do
         its(:owner) { is_expected.to eq 'user' }
         its(:group) { is_expected.to eq 'user' }
         it { is_expected.to be_mode 700 } # WTF converted to octal
+      end
+
+      describe file("#{home}/user/.go#{version}.source_url") do
+        it { is_expected.to be_file }
+        its(:mode) { is_expected.to eq '444' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
+        its(:content) { is_expected.to include "\nhttps://go.dev/dl/" }
       end
 
       describe file("#{home}/user/go#{version}/bin/go") do
