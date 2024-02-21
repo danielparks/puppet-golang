@@ -8,13 +8,13 @@ describe 'class golang' do
 
     describe file('/usr/local/go') do
       it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'root' }
+      its(:owner) { is_expected.to eq 'root' }
     end
 
     describe file('/usr/local/go/bin/go') do
       it { is_expected.to be_file }
       it { is_expected.to be_executable }
-      it { is_expected.to be_owned_by 'root' }
+      its(:owner) { is_expected.to eq 'root' }
     end
 
     describe file('/usr/local/bin/go') do
@@ -47,13 +47,13 @@ describe 'class golang' do
 
     describe file('/usr/local/go') do
       it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'root' }
+      its(:owner) { is_expected.to eq 'root' }
     end
 
     describe file('/usr/local/go/bin/go') do
       it { is_expected.to be_file }
       it { is_expected.to be_executable }
-      it { is_expected.to be_owned_by 'root' }
+      its(:owner) { is_expected.to eq 'root' }
     end
 
     describe file('/usr/local/bin/go') do

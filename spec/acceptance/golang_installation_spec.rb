@@ -108,13 +108,13 @@ describe 'defined type golang::installation' do
     ['1.10.4', '1.19.1'].each do |version|
       describe file("/opt/go#{version}") do
         it { is_expected.to be_directory }
-        it { is_expected.to be_owned_by 'root' }
+        its(:owner) { is_expected.to eq 'root' }
       end
 
       describe file("/opt/go#{version}/bin/go") do
         it { is_expected.to be_file }
         it { is_expected.to be_executable }
-        it { is_expected.to be_owned_by 'root' }
+        its(:owner) { is_expected.to eq 'root' }
       end
 
       describe command("/opt/go#{version}/bin/go version") do
@@ -148,7 +148,7 @@ describe 'defined type golang::installation' do
     describe file('/opt/go1.10.4/bin/go') do
       it { is_expected.to be_file }
       it { is_expected.to be_executable }
-      it { is_expected.to be_owned_by 'root' }
+      its(:owner) { is_expected.to eq 'root' }
     end
 
     describe file('/opt/go1.19.1') do
@@ -236,15 +236,15 @@ describe 'defined type golang::installation' do
     ['1.10.4', '1.19.1'].each do |version|
       describe file("#{home}/user/go#{version}") do
         it { is_expected.to be_directory }
-        it { is_expected.to be_owned_by 'user' }
-        it { is_expected.to be_grouped_into 'user' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
         it { is_expected.to be_mode 700 } # WTF converted to octal
       end
 
       describe file("#{home}/user/go#{version}/bin/go") do
         it { is_expected.to be_file }
-        it { is_expected.to be_owned_by 'user' }
-        it { is_expected.to be_grouped_into 'user' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
         it { is_expected.to be_mode 755 } # WTF converted to octal
       end
 
@@ -280,15 +280,15 @@ describe 'defined type golang::installation' do
 
     describe file("#{home}/user/go1.10.4") do
       it { is_expected.to be_directory }
-      it { is_expected.to be_owned_by 'user' }
-      it { is_expected.to be_grouped_into 'user' }
+      its(:owner) { is_expected.to eq 'user' }
+      its(:group) { is_expected.to eq 'user' }
       it { is_expected.to be_mode 755 } # WTF converted to octal
     end
 
     describe file("#{home}/user/go1.10.4/bin/go") do
       it { is_expected.to be_file }
-      it { is_expected.to be_owned_by 'user' }
-      it { is_expected.to be_grouped_into 'user' }
+      its(:owner) { is_expected.to eq 'user' }
+      its(:group) { is_expected.to eq 'user' }
       it { is_expected.to be_mode 755 } # WTF converted to octal
     end
 
