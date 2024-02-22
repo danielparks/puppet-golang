@@ -109,7 +109,7 @@ define golang::from_tarball (
       ensure        => present,
       extract       => true,
       extract_path  => $go_dir,
-      extract_flags => '--strip-components 1 -xf',
+      extract_flags => '--strip-components 1 --no-same-owner --no-same-permissions -xf',
       user          => $owner,
       group         => $group,
       source        => $source,
