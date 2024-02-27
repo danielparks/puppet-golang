@@ -131,4 +131,79 @@ describe 'defined type golang::from_tarball' do
       end
     end
   end
+
+  context 'as a non-root user' do
+    context 'default ensure with 1.10.4 source' do
+      it 'installs Go' do
+        idempotent_apply(<<~"PUPPET")
+          group { 'user': }
+          user { 'user':
+            home       => '#{home}/user',
+            gid        => 'user',
+            managehome => false,
+          }
+
+          file { '#{home}/user':
+            ensure => directory,
+            owner  => 'user',
+            group  => 'user',
+            mode   => '0755',
+          }
+
+          golang::from_tarball { '#{home}/user/go-install':
+            source => '#{source_url}',
+            owner  => 'user',
+            group  => 'user',
+            mode   => '0700',
+          }
+        PUPPET
+      end
+
+      describe file("#{home}/user/go-install") do
+        it { is_expected.to be_directory }
+        its(:mode) { is_expected.to eq '700' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
+      end
+
+      describe file("#{home}/user/.go-install.source_url") do
+        it { is_expected.to be_file }
+        its(:mode) { is_expected.to eq '444' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:content) { is_expected.to include "\n#{source_url}\n" }
+      end
+
+      describe file("#{home}/user/go-install/bin/go") do
+        it { is_expected.to be_file }
+        its(:mode) { is_expected.to eq '755' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
+      end
+
+      describe file("#{home}/user/go-install/VERSION") do
+        its(:content) { is_expected.to eq 'go1.10.4' }
+        its(:owner) { is_expected.to eq 'user' }
+        its(:group) { is_expected.to eq 'user' }
+      end
+    end
+
+    context 'cleans up' do
+      it 'uninstalls Go' do
+        idempotent_apply(<<~"PUPPET")
+          golang::from_tarball { '#{home}/user/go-install':
+            ensure => absent,
+            source => '#{source_url}',
+          }
+        PUPPET
+      end
+
+      describe file("#{home}/user/go-install") do
+        it { is_expected.not_to exist }
+      end
+
+      describe file("#{home}/user/.go-install.source_url") do
+        it { is_expected.not_to exist }
+      end
+    end
+  end
 end
