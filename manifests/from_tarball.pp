@@ -46,6 +46,9 @@ define golang::from_tarball (
   String[1]                          $mode       = '0755',
   Stdlib::Unixpath                   $state_file = golang::state_file($go_dir),
 ) {
+  $encoded_go_dir = $go_dir.regsubst('/', '_', 'G')
+  $archive_path = "/tmp/puppet-golang${encoded_go_dir}.tar.gz"
+
   if $ensure != any_version {
     # Used to ensure that the installation is updated when $source changes.
     $file_ensure = $ensure ? {
@@ -70,6 +73,38 @@ define golang::from_tarball (
     }
   }
 
+  if $ensure == present or $ensure == any_version {
+    # Remove Go installation if any of its files have the wrong user or group.
+    # This will cause it to be replaced with a fresh installation.
+    exec { "dp/golang check ownership of ${go_dir}":
+      command     => ['rm', '-rf', $go_dir],
+      environment => [
+        "GO_DIR=${go_dir}",
+        "OWNER=${owner}",
+        "GROUP=${group}",
+      ],
+      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+      onlyif      => 'find "$GO_DIR" "(" "(" -not -user "$OWNER" ")" -or "(" -not -group "$GROUP" ")" ")" -print -quit | grep .',
+      before      => File[$go_dir],
+      notify      => Archive[$archive_path],
+    }
+  }
+
+  # File[$state_file] changing should only trigger an update when ensure is
+  # present, and not any_version.
+  if $ensure == present {
+    # If the $go_dir/bin directory exists, archive won't update it. Also, we
+    # want to remove any files that are not present in the new version.
+    exec { "dp/golang refresh go installation at ${go_dir}":
+      command     => ['rm', '-rf', $go_dir],
+      path        => ['/usr/local/bin', '/usr/bin', '/bin'],
+      refreshonly => true,
+      subscribe   => File[$state_file],
+      before      => File[$go_dir],
+      notify      => Archive[$archive_path],
+    }
+  }
+
   $directory_ensure = $ensure ? {
     'present'     => directory,
     'any_version' => directory,
@@ -85,31 +120,13 @@ define golang::from_tarball (
   }
 
   if $ensure == present or $ensure == any_version {
-    $encoded_go_dir = $go_dir.regsubst('/', '_', 'G')
-    $archive_path = "/tmp/puppet-golang${encoded_go_dir}.tar.gz"
-
-    # Only trigger an update when ensure is present, and not any_version.
-    if $ensure == present {
-      # If the $go_dir/bin directory exists, archive won't update it. Also, we
-      # want to remove any files that are not present in the new version.
-      exec { "dp/golang refresh go installation at ${go_dir}":
-        command     => ['rm', '-rf', $go_dir],
-        path        => ['/usr/local/bin', '/usr/bin', '/bin'],
-        user        => $facts['identity']['user'],
-        refreshonly => true,
-        subscribe   => File[$state_file],
-        before      => File[$go_dir],
-        notify      => Archive[$archive_path],
-      }
-    }
-
     include archive
 
     archive { $archive_path:
       ensure        => present,
       extract       => true,
       extract_path  => $go_dir,
-      extract_flags => '--strip-components 1 -xf',
+      extract_flags => '--strip-components 1 --no-same-owner --no-same-permissions -xf',
       user          => $owner,
       group         => $group,
       source        => $source,

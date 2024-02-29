@@ -8,9 +8,19 @@ PuppetLitmus.configure!
 
 # For some reason litmusimage/ubuntu:22.04 doesn’t come with sudo.
 RSpec.configure do |config|
-  config.before(:suite) do
-    litmus = Class.new.extend(PuppetLitmus)
-    litmus.apply_manifest("package { 'sudo': }", catch_failures: true)
+  if RUBY_PLATFORM.include?('linux')
+    config.before(:suite) do
+      litmus = Class.new.extend(PuppetLitmus)
+      litmus.apply_manifest("package { 'sudo': }", catch_failures: true)
+    end
+  end
+end
+
+def home
+  if RUBY_PLATFORM.include?('darwin')
+    '/Users'
+  else
+    '/home'
   end
 end
 
