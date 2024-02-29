@@ -185,6 +185,48 @@ describe 'defined type golang::from_tarball' do
         its(:owner) { is_expected.to eq 'user' }
         its(:group) { is_expected.to eq 'user' }
       end
+
+      context 'enforcing file ownership' do
+        it 'chowns bin/go' do
+          File.chown(0, 0, "#{home}/user/go-install/bin/go")
+        end
+
+        it 'reinstalls Go' do
+          apply_manifest(<<~"PUPPET", expect_changes: true)
+            golang::from_tarball { '#{home}/user/go-install':
+              source => '#{source_url}',
+              owner  => 'user',
+              group  => 'user',
+              mode   => '0700',
+            }
+          PUPPET
+        end
+
+        describe file("#{home}/user/go-install") do
+          it { is_expected.to be_directory }
+          its(:mode) { is_expected.to eq '700' }
+          its(:owner) { is_expected.to eq 'user' }
+          its(:group) { is_expected.to eq 'user' }
+        end
+
+        describe file("#{home}/user/go-install/bin/go") do
+          it { is_expected.to be_file }
+          its(:mode) { is_expected.to eq '755' }
+          its(:owner) { is_expected.to eq 'user' }
+          its(:group) { is_expected.to eq 'user' }
+        end
+
+        it 'does nothing' do
+          apply_manifest(<<~"PUPPET", catch_changes: true)
+            golang::from_tarball { '#{home}/user/go-install':
+              source => '#{source_url}',
+              owner  => 'user',
+              group  => 'user',
+              mode   => '0700',
+            }
+          PUPPET
+        end
+      end
     end
 
     context 'cleans up' do

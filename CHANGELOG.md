@@ -36,6 +36,13 @@ GitHub security advisory: [GHSA-8h8m-h98f-vv84]
 [`tar`]: https://www.man7.org/linux/man-pages/man1/tar.1.html
 [GHSA-8h8m-h98f-vv84]: https://github.com/danielparks/puppet-golang/security/advisories/GHSA-8h8m-h98f-vv84
 
+### Changes
+
+As part of the security fix mentioned above, it became necessary to be more
+agressive about ensuring that the owner and group of files in the installation
+are correct. dp-golang now deletes and recreates any Go installation it finds
+that has a file or directory with the wrong owner or group.
+
 ## Release 1.2.6
 
 * Synced with [PDK][].
