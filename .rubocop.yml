@@ -76,10 +76,8 @@ Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
 Style/GuardClause:
-  Description: Postfix conditionals are sometimes ambiguous and often harder to read.
   Enabled: false
 Style/Next:
-  Description: Using next instead of if often makes things harder to read.
   Enabled: false
 Layout/MultilineMethodCallIndentation:
   Description: aligned is awkward and hard to read.
