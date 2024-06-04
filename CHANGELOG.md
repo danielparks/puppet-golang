@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## main branch
+
 ## Release 1.2.8
 
 ## Release 1.2.7
