@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 
 ## Release 1.2.8
 
+* Synced with [PDK][].
+
+[PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
+
 ## Release 1.2.7
 
 ### Security fix
