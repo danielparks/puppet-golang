@@ -40,7 +40,7 @@ describe 'class golang' do
     it do
       idempotent_apply(<<~'END')
         class { 'golang':
-          ensure => '1.10.4',
+          ensure => '1.22.9',
         }
       END
     end
@@ -69,7 +69,7 @@ describe 'class golang' do
     end
 
     describe command('/usr/local/bin/go version') do
-      its(:stdout) { is_expected.to start_with('go version go1.10.4 ') }
+      its(:stdout) { is_expected.to start_with('go version go1.22.9 ') }
       its(:stderr) { is_expected.to eq '' }
       its(:exit_status) { is_expected.to eq 0 }
     end
