@@ -9,7 +9,7 @@ newer_source_url = 'https://go.dev/dl/go1.19.1.darwin-amd64.tar.gz'
 
 describe 'defined type golang::from_tarball' do
   context 'repeated root installs:' do
-    context 'default ensure with 1.10.4 source' do
+    context 'default ensure with gopher-owned source' do
       it 'installs Go' do
         idempotent_apply(<<~"PUPPET")
           golang::from_tarball { '/opt/go':
@@ -42,7 +42,7 @@ describe 'defined type golang::from_tarball' do
       end
     end
 
-    context 'ensure => present' do
+    context 'ensure => present with gopher-owned source' do
       it 'causes no changes' do
         apply_manifest(<<~"PUPPET", catch_changes: true)
           golang::from_tarball { '/opt/go':
@@ -133,7 +133,7 @@ describe 'defined type golang::from_tarball' do
   end
 
   context 'as a non-root user' do
-    context 'default ensure with 1.10.4 source' do
+    context 'default ensure with gopher-owned source' do
       it 'installs Go' do
         idempotent_apply(<<~"PUPPET")
           group { 'user': }
