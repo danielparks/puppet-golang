@@ -55,8 +55,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-22.04
-            puppet: 6
           - os: ubuntu-latest
             puppet: 7
           - os: ubuntu-latest
