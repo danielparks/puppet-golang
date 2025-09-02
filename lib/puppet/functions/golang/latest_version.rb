@@ -31,7 +31,7 @@ Puppet::Functions.create_function(:"golang::latest_version") do
     if !@@golang_latest_version_cache[url] \
         || time - @@golang_latest_version_cache[url][:time] >= 600
       @@golang_latest_version_cache[url] = {
-        time: time,
+        time:,
         version: load_latest_version(url),
       }
     end
