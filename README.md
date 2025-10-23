@@ -2,7 +2,7 @@
 
 This [Puppet][] module has sane defaults to keep a standard installation simple,
 but is flexible enough to support automatic updates, multiple installations of
-diferent versions, and running [Puppet as a non-root user][non-root].
+different versions, and running [Puppet as a non-root user][non-root].
 
 [Puppet]: https://github.com/puppetlabs/puppet
 [non-root]: #running-puppet-as-a-non-root-user

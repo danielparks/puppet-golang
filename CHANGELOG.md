@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 * Synced with [PDK][] and disabled Puppet 6 testing, since the package signing
   key is no longer valid.
 * Switched to Ruby 3.1 for automated testing since PDK no longer supports 2.7.
+* Fixed a few spelling mistakes.
 
 [PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
 
@@ -53,7 +54,7 @@ GitHub security advisory: [GHSA-8h8m-h98f-vv84]
 ### Changes
 
 As part of the security fix mentioned above, it became necessary to be more
-agressive about ensuring that the owner and group of files in the installation
+aggressive about ensuring that the owner and group of files in the installation
 are correct. dp-golang now deletes and recreates any Go installation it finds
 that has a file or directory with the wrong owner or group.
 

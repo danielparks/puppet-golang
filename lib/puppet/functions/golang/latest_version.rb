@@ -4,7 +4,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 
-# @summary Get the lastest stable version number for Go
+# @summary Get the latest stable version number for Go
 #
 # Makes a request to the passed URL to find the latest stable version of Go. The
 # request will be cached for 10 minutes, so repeated calls to this function will

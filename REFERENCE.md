@@ -16,7 +16,7 @@
 
 ### Functions
 
-* [`golang::latest_version`](#golang--latest_version): Get the lastest stable version number for Go
+* [`golang::latest_version`](#golang--latest_version): Get the latest stable version number for Go
 * [`golang::state_file`](#golang--state_file): Figure out the default state file path for a given `$go_dir`
 
 ### Data types
