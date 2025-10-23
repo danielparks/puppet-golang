@@ -91,3 +91,11 @@ jobs:
       run: sudo -E /opt/puppetlabs/pdk/bin/pdk bundle install
     - name: Run acceptance tests
       run: sudo -E /opt/puppetlabs/pdk/bin/pdk bundle exec rake litmus:acceptance:localhost
+
+  typos:
+    name: typos
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: crate-ci/typos@v1.38.1

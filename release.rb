@@ -155,7 +155,7 @@ def fix_links(root, path)
   IO.write(path, lines.join(''))
 end
 
-# Huge kludge. Only works on unorderd lists at the moment.
+# Huge kludge. Only works on unordered lists at the moment.
 def unwrap_markdown!(md)
   while md.gsub!(%r{^( *)([*+-])( +\S.+?)\n\1  +([^ *+-])}, '\1\2\3 \4')
   end
@@ -273,8 +273,8 @@ if run_acceptance && File.exist?('spec/acceptance')
 end
 
 run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
-  dry_run:)
-run('git', 'tag', "v#{version}", '-sm', <<~MSG.chomp, dry_run:)
+  dry_run: dry_run)
+run('git', 'tag', "v#{version}", '-sm', <<~MSG.chomp, dry_run: dry_run)
   #{version}: #{summary}
 
   #{release_notes}
@@ -283,10 +283,10 @@ MSG
 update_for_forge(metadata)
 
 run('pdk', 'build', '--force')
-run('pdk', 'release', 'publish', dry_run:)
+run('pdk', 'release', 'publish', dry_run: dry_run)
 
 # Reset Forge-specific changes
-run('git', 'restore', '.', dry_run:)
+run('git', 'restore', '.', dry_run: dry_run)
 
 # Add "## main branch" header to CHANGELOG.md
 insert_main_branch_header!(changelog)
@@ -295,10 +295,10 @@ File.write('CHANGELOG.md', changelog.join(''))
 
 run('git', 'add', 'CHANGELOG.md')
 run('git', 'commit', '-m', 'Add “## main branch” header back to CHANGELOG.md.',
-  dry_run:)
+  dry_run: dry_run)
 
 # Push release to GitHub
-run('git', 'push', '--tags', 'origin', 'main', dry_run:)
+run('git', 'push', '--tags', 'origin', 'main', dry_run: dry_run)
 
 unwrap_markdown!(release_notes)
 
@@ -307,4 +307,4 @@ run('gh', 'release', 'create',
   '--notes', release_notes,
   "v#{version}",
   Dir["pkg/*-#{version}.tar.gz"].first,
-  dry_run:)
+  dry_run: dry_run)
