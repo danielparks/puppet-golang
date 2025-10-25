@@ -11,13 +11,13 @@ All notable changes to this project will be documented in this file.
 
 [PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
 
-## Release 1.2.8
+## Release 1.2.8 (2024-06-03)
 
 * Synced with [PDK][].
 
 [PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
 
-## Release 1.2.7
+## Release 1.2.7 (2024-02-29)
 
 ### Security fix
 
@@ -58,7 +58,7 @@ aggressive about ensuring that the owner and group of files in the installation
 are correct. dp-golang now deletes and recreates any Go installation it finds
 that has a file or directory with the wrong owner or group.
 
-## Release 1.2.6
+## Release 1.2.6 (2024-02-15)
 
 * Synced with [PDK][].
 
