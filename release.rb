@@ -3,6 +3,7 @@
 # rubocop:disable Style/WhileUntilModifier
 
 require 'getoptlong'
+require 'io/console'
 require 'json'
 require 'open3'
 require 'rdoc'
@@ -77,7 +78,15 @@ end
 version, summary = ARGV
 
 if forge_token.nil? || forge_token.empty?
-  usage_error 'Must specify TOKEN (use $PDK_FORGE_TOKEN environment variable)'
+  STDERR.print 'Enter PDK Forge token: '
+  forge_token = STDIN.noecho(&:gets).chomp
+  STDERR.puts
+end
+
+if forge_token.length != 64
+  STDERR.puts 'Expected PDK Forge token to be 64 characters long, got '\
+    "#{forge_token.length}."
+  exit 1
 end
 
 # Modifies CHANGELOG.md for release and extracts changes
@@ -95,7 +104,7 @@ def extract_changes_for_release!(changelog, version)
     end
 
     # Should have found "## main branch". Replace it with "## Release..."
-    line.replace("## Release #{version}\n")
+    line.replace("## Release #{version} (#{Time.now.strftime('%Y-%m-%d')})\n")
 
     line = enumerator.next
     while line.match?(%r{\A\s*\z})
@@ -208,14 +217,27 @@ def run_capture(command, *args, dry_run: false)
   output
 end
 
-def confirm_no_changes
-  untracked = run_capture('git', 'ls-files', '--exclude-standard', '--other')
+def get_untracked
+  run_capture('git', 'ls-files', '--exclude-standard', '--other')
+end
+
+def get_diff(include_staged: false)
+  extra = include_staged ? ['HEAD'] : []
+  run_capture('git', 'diff', '--color', *extra)
+end
+
+def confirm_no_changes(ignore_staged: false)
+  untracked = get_untracked
   unless untracked == ''
     puts untracked
     raise 'Found untracked files.'
   end
 
-  run('git', 'diff', '--color', '--exit-code')
+  diff = get_diff(include_staged: !ignore_staged)
+  unless diff == ''
+    puts diff
+    raise 'Found uncommitted changes.'
+  end
 end
 
 # There are broadly three passes to this.
@@ -248,7 +270,7 @@ metadata = JSON.parse(File.read('metadata.json'))
 
 if just_forge_update
   update_for_forge(metadata)
-  exit(0)
+  exit 0
 end
 
 run('git', 'add', 'CHANGELOG.md', 'metadata.json')
@@ -256,11 +278,11 @@ run('git', 'add', 'CHANGELOG.md', 'metadata.json')
 puts 'Confirming that REFERENCE.md is up-to-date'
 run('pdk', 'bundle', 'exec', 'puppet', 'strings', 'generate',
   '--format', 'markdown')
-confirm_no_changes
+confirm_no_changes(ignore_staged: true)
 
 puts 'Confirming that pdk update does nothing'
 run('pdk', 'update', '--force')
-confirm_no_changes
+confirm_no_changes(ignore_staged: true)
 
 run('pdk', 'validate')
 
@@ -272,9 +294,14 @@ if run_acceptance && File.exist?('spec/acceptance')
   run('./test.sh', 'init', 'run', 'destroy')
 end
 
-run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
-  dry_run: dry_run)
-run('git', 'tag', "v#{version}", '-sm', <<~MSG.chomp, dry_run: dry_run)
+if get_diff(include_staged: true) == ''
+  puts 'Nothing to commit; skipping release commit'
+else
+  run('git', 'commit', '-m', "Release #{version}: #{summary.chomp('.')}.",
+    dry_run: dry_run)
+end
+
+run('git', 'tag', "v#{version}", '-fsm', <<~MSG.chomp, dry_run: dry_run)
   #{version}: #{summary}
 
   #{release_notes}
@@ -283,6 +310,7 @@ MSG
 update_for_forge(metadata)
 
 run('pdk', 'build', '--force')
+ENV['PDK_FORGE_TOKEN'] = forge_token
 run('pdk', 'release', 'publish', dry_run: dry_run)
 
 # Reset Forge-specific changes
@@ -298,7 +326,7 @@ run('git', 'commit', '-m', 'Add “## main branch” header back to CHANGELOG.md
   dry_run: dry_run)
 
 # Push release to GitHub
-run('git', 'push', '--tags', 'origin', 'main', dry_run: dry_run)
+run('git', 'push', '--tags', 'origin', 'HEAD', dry_run: dry_run)
 
 unwrap_markdown!(release_notes)
 
