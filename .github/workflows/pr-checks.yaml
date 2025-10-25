@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
 
 env:
+  # Enable typos color output
+  CLICOLOR: 1
   # Enable rspec color output
   SPEC_OPTS: --force-color
 
