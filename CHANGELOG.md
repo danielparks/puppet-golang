@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## main branch
+## Release 1.2.9 (2025-10-25)
 
 * Synced with [PDK][] and disabled Puppet 6 testing, since the package signing
   key is no longer valid.
