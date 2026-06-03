@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## main branch
 
+* Synced with [PDK][].
+
+[PDK]: https://www.puppet.com/docs/pdk/latest/pdk.html
+
 ## Release 1.2.9 (2025-10-25)
 
 * Synced with [PDK][] and disabled Puppet 6 testing, since the package signing
