@@ -90,11 +90,11 @@ This does not support Windows.
 
 ## Development status
 
-This is stable. I have no features planned for the future, though I’m open to
-[suggestions][issues].
+This is stable. I’m unlikely to update this unless there are bugs; I no longer
+use it myself since switching to [Nix][].
 
-I will occasionally make 0.0.1 releases to keep this updated with the latest
-version of [PDK][].
+Please file an [issue][] if you find a bug or are interested in taking ownership
+of this module.
 
 ## Reference
 
@@ -113,6 +113,6 @@ pdk bundle exec puppet strings generate --format markdown
 [$g::i::group]: REFERENCE.md#-golang--installation--group
 [`golang::linked_binaries`]: REFERENCE.md#golang--linked_binaries
 [hiera]: https://puppet.com/docs/puppet/latest/hiera.html
-[issues]: https://github.com/danielparks/puppet-golang/issues
-[PDK]: https://github.com/puppetlabs/pdk
+[Nix]: https://nix.dev
+[issue]: https://github.com/danielparks/puppet-golang/issues
 [REFERENCE.md]: REFERENCE.md
